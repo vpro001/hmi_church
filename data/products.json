@@ -1,0 +1,52 @@
+[
+  {
+    "id": "foundation-for-living",
+    "title": "Foundation for Living",
+    "category": "Christian e-book",
+    "price": 13500,
+    "format": "E-book (digital)",
+    "cover": "v2",
+    "image": "",
+    "description": ""
+  },
+  {
+    "id": "i-want-to-marry",
+    "title": "I Want To Marry: WHY. HOW. WHAT.",
+    "category": "Christian e-book",
+    "price": 12000,
+    "format": "E-book (digital)",
+    "cover": "v3",
+    "image": "",
+    "description": ""
+  },
+  {
+    "id": "love-portion",
+    "title": "Love Portion",
+    "category": "Christian e-book",
+    "price": 15000,
+    "format": "E-book (digital)",
+    "cover": "v4",
+    "image": "",
+    "description": ""
+  },
+  {
+    "id": "the-logics-of-parenting",
+    "title": "The Logics of Parenting: A clinical approach",
+    "category": "Christian e-book",
+    "price": 18000,
+    "format": "E-book (digital)",
+    "cover": "v2",
+    "image": "",
+    "description": ""
+  },
+  {
+    "id": "the-understanding-of-marriage",
+    "title": "The Understanding of Marriage",
+    "category": "Christian e-book",
+    "price": 15000,
+    "format": "E-book (digital)",
+    "cover": "v3",
+    "image": "",
+    "description": ""
+  }
+]

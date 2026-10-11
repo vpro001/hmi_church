@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /actions/
+Disallow: /data/
+Disallow: /includes/
+
+Sitemap: https://healingmymarriage.org/sitemap.xml

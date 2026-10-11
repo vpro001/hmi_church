@@ -1,0 +1,83 @@
+[
+  {
+    "slug": "marriage-counseling",
+    "title": "Marriage Counseling",
+    "date": "2026-09-04",
+    "category": "Counseling",
+    "icon": "bi-chat-heart-fill",
+    "cover": "v1",
+    "author": "Healing My-Marriage International",
+    "excerpt": "What to expect when you seek help for your marriage, and why asking for help is a sign of strength.",
+    "body": [
+      "Every marriage meets seasons of strain. Seeking counsel does not mean a marriage has failed. It means two people are willing to work for what they promised each other.",
+      "In faith-based counseling, the conversation begins with listening. Each person is given space to speak, and the counselor helps both spouses understand what is happening beneath the arguments, the silence, or the distance.",
+      "From there, couples are guided toward practical steps grounded in Scripture: honest communication, forgiveness, trust that is rebuilt a day at a time, and shared prayer.",
+      "If you are ready to begin, you can request a counseling session through the form on the Counseling page. Your request is handled in confidence."
+    ],
+    "review": "Draft copy. Ministry to confirm and replace with its own teaching."
+  },
+  {
+    "slug": "teaching-and-biblical-guidance",
+    "title": "Teaching and Biblical Guidance",
+    "date": "2026-09-04",
+    "category": "Teaching",
+    "icon": "bi-book-fill",
+    "cover": "v2",
+    "author": "Healing My-Marriage International",
+    "excerpt": "How Scripture shapes the way couples speak, serve and forgive in everyday married life.",
+    "body": [
+      "A marriage is built on more than affection. It stands on convictions that hold when feelings change.",
+      "Through teaching sessions, workshops and resources, the ministry helps couples see their marriage through the lens of God's Word and apply it to ordinary days: money, in-laws, children, work and rest.",
+      "Biblical guidance is not a list of rules. It is an invitation to a way of living that makes room for patience, honesty and grace."
+    ],
+    "review": "Draft copy. Ministry to confirm and replace with its own teaching."
+  },
+  {
+    "slug": "charitable-initiatives",
+    "title": "Charitable Initiatives",
+    "date": "2026-09-04",
+    "category": "Outreach",
+    "icon": "bi-hand-thumbs-up-fill",
+    "cover": "v3",
+    "author": "Healing My-Marriage International",
+    "excerpt": "Care for families beyond the counseling room, through the ministry's outreach and youth work.",
+    "body": [
+      "The ministry believes that strong families are a gift to a whole community. For that reason its work reaches beyond couples who walk through the door.",
+      "Outreach and the Supporting Youths Initiative exist to encourage the next generation and to stand with families who need practical help and hope.",
+      "Details of current initiatives and how to take part will be shared here as they are confirmed."
+    ],
+    "review": "Draft copy. Ministry to list actual initiatives, dates and ways to give or volunteer."
+  },
+  {
+    "slug": "prayer-meetings-asking-and-receiving",
+    "title": "Prayer Meetings: Asking and Receiving",
+    "date": "2026-09-04",
+    "category": "Prayer",
+    "icon": "bi-heart-fill",
+    "cover": "v4",
+    "author": "Healing My-Marriage International",
+    "excerpt": "Why prayer sits at the center of every restored marriage, and how couples can pray together.",
+    "body": [
+      "Many couples can speak to God about almost anything, yet find it hard to pray out loud with each other. Praying together is one of the simplest ways to bring a marriage back to its foundation.",
+      "Prayer meetings give couples and families a place to bring requests, to listen, and to be encouraged by others who are walking a similar road.",
+      "You can send a prayer request through the Contact page, and the ministry will stand with you."
+    ],
+    "review": "Draft copy. Ministry to confirm prayer meeting format and schedule."
+  },
+  {
+    "slug": "spiritual-retreats",
+    "title": "Spiritual Retreats",
+    "date": "2026-09-04",
+    "category": "Events",
+    "icon": "bi-tree-fill",
+    "cover": "v2",
+    "author": "Healing My-Marriage International",
+    "excerpt": "Time away from the noise to rest, reflect and renew your covenant with your spouse and with God.",
+    "body": [
+      "Daily life leaves little room to reflect on the marriage itself. A retreat creates that room.",
+      "Spiritual retreats gather couples for teaching, prayer, honest conversation and rest, away from the pressures that crowd ordinary routines.",
+      "Dates and venues will be posted on the Events page once confirmed by the ministry."
+    ],
+    "review": "Draft copy. Ministry to confirm retreat format, venue and dates."
+  }
+]
