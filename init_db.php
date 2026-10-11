@@ -15,10 +15,10 @@ $conn = Database::getConnection();
 // Check if admin exists
 $admin = Database::fetchOne("SELECT id FROM admin_users WHERE username = 'admin'");
 if (!$admin) {
-    $hash = password_hash('admin123', PASSWORD_DEFAULT);
+    $password = 'admin123';
     Database::execute(
         "INSERT INTO admin_users (username, email, password_hash, full_name, role) VALUES (?, ?, ?, ?, 'superadmin')",
-        ['admin', 'admin@healingmymarriage.org', $hash, 'System Administrator']
+        ['admin', 'admin@healingmymarriage.org', $password, 'System Administrator']
     );
     echo "Created default admin user (admin / admin123)\n";
 }

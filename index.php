@@ -172,13 +172,13 @@ $events = array_slice(get_events(true), 0, 3);
       <div class="d-grid gap-3">
         <?php foreach ($events as $e): ?>
           <article class="event-row reveal">
-            <div class="event-date" aria-hidden="true"><span class="d"><?= h(fmt_date($e['start'], 'j')) ?></span><span class="m"><?= h(fmt_date($e['start'], 'M')) ?></span></div>
+            <div class="event-date" aria-hidden="true"><span class="d"><?= h(fmt_date($e['start_datetime'], 'j')) ?></span><span class="m"><?= h(fmt_date($e['start_datetime'], 'M')) ?></span></div>
             <div>
-              <h3><?= h($e['title']) ?><?php if (!empty($e['sample'])): ?> <span class="badge badge-hmi badge-sample align-middle">Sample</span><?php endif; ?></h3>
+              <h3><?= h($e['title']) ?></h3>
               <div class="meta">
-                <span><i class="bi bi-calendar-event" aria-hidden="true"></i> <?= h(fmt_date($e['start'], 'l, j F Y')) ?></span>
-                <span><i class="bi bi-clock" aria-hidden="true"></i> <?= h(fmt_date($e['start'], 'g:i a')) ?></span>
-                <span><i class="bi bi-geo-alt" aria-hidden="true"></i> <?= h($e['location']) ?></span>
+                <span><i class="bi bi-calendar-event" aria-hidden="true"></i> <?= h(fmt_date($e['start_datetime'], 'l, j F Y')) ?></span>
+                <span><i class="bi bi-clock" aria-hidden="true"></i> <?= h(fmt_date($e['start_datetime'], 'g:i a')) ?></span>
+                <span><i class="bi bi-geo-alt" aria-hidden="true"></i> <?= h($e['location'] ?? 'Mercyland Central / Diamond Estate, Rivers State') ?></span>
               </div>
             </div>
             <a class="btn btn-hmi-outline" href="<?= h(url('events.php#' . $e['id'])) ?>">Details</a>
@@ -210,9 +210,9 @@ $events = array_slice(get_events(true), 0, 3);
       <?php foreach ($posts as $p): ?>
         <div class="col-md-6 col-lg-4 reveal">
           <article class="hmi-card">
-            <div class="cover <?= $p['cover'] !== 'v1' ? h($p['cover']) : '' ?>" aria-hidden="true"><span class="tag"><?= h($p['category']) ?></span><i class="bi <?= h($p['icon']) ?>"></i></div>
+            <div class="cover v1" aria-hidden="true"><span class="tag"><?= h($p['category'] ?? 'Article') ?></span><i class="bi bi-journal-text"></i></div>
             <div class="body">
-              <div class="meta"><span><?= h(fmt_date($p['date'])) ?></span></div>
+              <div class="meta"><span><?= h(fmt_date($p['published_at'] ?? $p['created_at'])) ?></span></div>
               <h3><a class="text-decoration-none" style="color:inherit" href="<?= h(url('post.php?slug=' . $p['slug'])) ?>"><?= h($p['title']) ?></a></h3>
               <p><?= h($p['excerpt']) ?></p>
               <a class="link-arrow mt-auto" href="<?= h(url('post.php?slug=' . $p['slug'])) ?>">Read more</a>

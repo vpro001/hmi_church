@@ -1,5 +1,11 @@
 <?php
+/**
+ * Shared functions - Database-backed version
+ * Healing My-Marriage International
+ */
+
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/db.php';
 
 /* ---------- Output helpers ---------- */
 
@@ -10,23 +16,29 @@ function h(?string $s): string
 
 function base_url(): string
 {
-    if (SITE['base_url'] !== '') {
-        return rtrim(SITE['base_url'], '/');
+    $settings = get_public_settings();
+    if (!empty($settings['site_base_url'])) {
+        return rtrim($settings['site_base_url'], '/');
     }
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $dir    = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
-    // actions/ lives one level down
-    $dir    = preg_replace('#/actions$#', '', $dir);
+    // Get the site root by removing /admin, /actions, etc. from the script path
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
+    // Remove /admin, /actions, /admin/actions, etc.
+    $dir = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+    $dir = preg_replace('#/(admin|actions)(/|$)#', '', $dir);
+    // If we're still in a subdirectory, keep going up until we hit the root
+    while (in_array(basename($dir), ['admin', 'actions'])) {
+        $dir = dirname($dir);
+    }
     return $scheme . '://' . $host . $dir;
 }
 
-/** Root-relative path helper that works from the site root and from actions/. */
 function url(string $path = ''): string
 {
-    $dir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
-    $dir = preg_replace('#/actions$#', '', $dir);
-    return $dir . '/' . ltrim($path, '/');
+    // Use the base_url function which properly handles admin/actions context
+    $base = base_url();
+    return $base . '/' . ltrim($path, '/');
 }
 
 function asset(string $path): string
@@ -41,44 +53,10 @@ function tel_link(string $raw): string
     return 'tel:' . preg_replace('/[^+\d]/', '', $raw);
 }
 
-/* ---------- Content (JSON) ---------- */
-
-function load_json(string $name): array
+function money(int $n): string
 {
-    $file = __DIR__ . '/../data/' . $name . '.json';
-    if (!is_file($file)) {
-        return [];
-    }
-    $data = json_decode((string)file_get_contents($file), true);
-    return is_array($data) ? $data : [];
-}
-
-function get_posts(): array
-{
-    $posts = load_json('posts');
-    usort($posts, fn($a, $b) => strcmp($b['date'] ?? '', $a['date'] ?? ''));
-    return $posts;
-}
-
-function get_events(bool $upcomingOnly = false): array
-{
-    $events = load_json('events');
-    usort($events, fn($a, $b) => strcmp($a['start'] ?? '', $b['start'] ?? ''));
-    if ($upcomingOnly) {
-        $now = date('Y-m-d');
-        $events = array_values(array_filter($events, fn($e) => substr($e['start'] ?? '', 0, 10) >= $now));
-    }
-    return $events;
-}
-
-function get_products(): array
-{
-    return load_json('products');
-}
-
-function money(int|float $n): string
-{
-    return '₦' . number_format($n, 0, '.', ',');
+    $symbol = get_setting('currency_symbol', '₦');
+    return $symbol . number_format($n, 0, '.', ',');
 }
 
 function fmt_date(string $iso, string $format = 'j F Y'): string
@@ -87,7 +65,119 @@ function fmt_date(string $iso, string $format = 'j F Y'): string
     return $t ? date($format, $t) : '';
 }
 
-/* ---------- Forms: CSRF, validation, storage, mail ---------- */
+/* ---------- Database Content Functions ---------- */
+
+function get_products(): array
+{
+    return Database::fetchAll(
+        "SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.is_active = 1 ORDER BY p.sort_order, p.title"
+    );
+}
+
+function get_product_by_slug(string $slug): ?array
+{
+    return Database::fetchOne(
+        "SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.slug = ? AND p.is_active = 1",
+        [$slug]
+    );
+}
+
+function get_product_by_id(int $id): ?array
+{
+    return Database::fetchOne(
+        "SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.id = ? AND p.is_active = 1",
+        [$id]
+    );
+}
+
+function get_featured_products(int $limit = 4): array
+{
+    return Database::fetchAll(
+        "SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.is_active = 1 AND p.is_featured = 1 ORDER BY p.sort_order LIMIT ?",
+        [$limit]
+    );
+}
+
+function get_categories(): array
+{
+    return Database::fetchAll("SELECT * FROM categories WHERE is_active = 1 ORDER BY sort_order, name");
+}
+
+function get_posts(bool $publishedOnly = true): array
+{
+    $sql = "SELECT * FROM posts";
+    $params = [];
+    if ($publishedOnly) {
+        $sql .= " WHERE status = 'published' AND (published_at IS NULL OR published_at <= NOW())";
+    }
+    $sql .= " ORDER BY published_at DESC, created_at DESC";
+    return Database::fetchAll($sql, $params);
+}
+
+function get_post_by_slug(string $slug): ?array
+{
+    return Database::fetchOne(
+        "SELECT * FROM posts WHERE slug = ? AND status = 'published' AND (published_at IS NULL OR published_at <= NOW())",
+        [$slug]
+    );
+}
+
+function get_recent_posts(int $limit = 3, int $excludeId = 0): array
+{
+    $sql = "SELECT * FROM posts WHERE status = 'published' AND (published_at IS NULL OR published_at <= NOW())";
+    $params = [];
+    if ($excludeId) {
+        $sql .= " AND id != ?";
+        $params[] = $excludeId;
+    }
+    $sql .= " ORDER BY published_at DESC LIMIT ?";
+    $params[] = $limit;
+    return Database::fetchAll($sql, $params);
+}
+
+function get_events(bool $upcomingOnly = false): array
+{
+    $sql = "SELECT * FROM events WHERE status = 'published'";
+    $params = [];
+    if ($upcomingOnly) {
+        $sql .= " AND start_datetime > NOW()";
+    }
+    $sql .= " ORDER BY start_datetime ASC";
+    return Database::fetchAll($sql, $params);
+}
+
+function get_upcoming_events(int $limit = 3): array
+{
+    return Database::fetchAll(
+        "SELECT * FROM events WHERE status = 'published' AND start_datetime > NOW() ORDER BY start_datetime ASC LIMIT ?",
+        [$limit]
+    );
+}
+
+function get_event_by_slug(string $slug): ?array
+{
+    return Database::fetchOne(
+        "SELECT * FROM events WHERE slug = ? AND status = 'published'",
+        [$slug]
+    );
+}
+
+function get_page_by_slug(string $slug): ?array
+{
+    return Database::fetchOne(
+        "SELECT * FROM pages WHERE slug = ? AND is_active = 1",
+        [$slug]
+    );
+}
+
+function get_nav_pages(): array
+{
+    return Database::fetchAll(
+        "SELECT * FROM pages WHERE is_active = 1 AND show_in_nav = 1 ORDER BY nav_order, title"
+    );
+}
+
+/* ---------- CSRF & Forms ---------- */
 
 function csrf_token(): string
 {
@@ -125,7 +215,7 @@ function clean_line(?string $v, int $max = 150): string
 function too_fast_or_spam(): bool
 {
     if (!empty($_POST['website_url'])) {
-        return true; // honeypot filled
+        return true;
     }
     $last = $_SESSION['last_submit'] ?? 0;
     return (time() - $last) < 8;
@@ -148,30 +238,45 @@ function old(?array $flash = null, string $key = '', string $default = ''): stri
     return h($flash['old'][$key] ?? $default);
 }
 
+/* ---------- Submissions (Database) ---------- */
+
 function save_submission(string $type, array $data): bool
 {
-    $dir = __DIR__ . '/../data/submissions';
-    if (!is_dir($dir) && !mkdir($dir, 0750, true) && !is_dir($dir)) {
-        return false;
-    }
-    $row = ['time' => date('c'), 'type' => $type, 'ip_hash' => substr(hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? '') . 'hmi'), 0, 16)] + $data;
-    $line = json_encode($row, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
-    return file_put_contents($dir . '/' . $type . '.jsonl', $line, FILE_APPEND | LOCK_EX) !== false;
+    $ipHash = substr(hash('sha256', (($_SERVER['REMOTE_ADDR'] ?? '') . 'hmi')), 0, 16);
+    return Database::execute(
+        "INSERT INTO submissions (type, name, email, phone, subject, message, metadata, ip_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            $type,
+            $data['name'] ?? '',
+            $data['email'] ?? '',
+            $data['phone'] ?? '',
+            $data['subject'] ?? '',
+            $data['message'] ?? '',
+            isset($data['metadata']) ? json_encode($data['metadata']) : null,
+            $ipHash
+        ]
+    );
 }
 
 function send_notification(string $subject, string $body, string $replyTo = ''): void
 {
-    if (!SITE['mail_enabled']) {
-        return;
-    }
+    $settings = get_public_settings();
+    if (empty($settings['mail_enabled'])) return;
+    
     $headers = [
-        'From: ' . SITE['short_name'] . ' <' . SITE['mail_from'] . '>',
+        'From: ' . ($settings['site_short_name'] ?? 'HMI') . ' <' . ($settings['mail_from'] ?? 'no-reply@healingmymarriage.org') . '>',
         'Content-Type: text/plain; charset=UTF-8',
     ];
     if ($replyTo !== '' && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
         $headers[] = 'Reply-To: ' . $replyTo;
     }
-    @mail(SITE['mail_to'], '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers));
+    @mail($settings['mail_to'] ?? 'info@healingmymarriage.org', '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers));
+}
+
+function redirect(string $path, int $code = 303): never
+{
+    header('Location: ' . url($path), true, $code);
+    exit;
 }
 
 function redirect_back(string $fallback, string $anchor = ''): never
@@ -185,3 +290,76 @@ function redirect_back(string $fallback, string $anchor = ''): never
     header('Location: ' . $to . $anchor, true, 303);
     exit;
 }
+
+/* ---------- Order Functions ---------- */
+
+function create_order(array $data): int|false
+{
+    $ref = 'HMI-' . date('ymd') . '-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 5));
+    
+    $orderId = Database::insert(
+        "INSERT INTO orders (order_ref, user_id, status, customer_name, customer_email, customer_phone, customer_address, subtotal, discount, total, notes, ip_address, user_agent) VALUES (?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            $ref,
+            $data['user_id'] ?? null,
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+            $data['address'] ?? '',
+            $data['subtotal'],
+            $data['discount'] ?? 0,
+            $data['total'],
+            $data['notes'] ?? '',
+            $_SERVER['REMOTE_ADDR'] ?? '',
+            $_SERVER['HTTP_USER_AGENT'] ?? ''
+        ]
+    );
+    
+    if ($orderId && !empty($data['items'])) {
+        foreach ($data['items'] as $item) {
+            Database::execute(
+                "INSERT INTO order_items (order_id, product_id, product_title, product_slug, price, qty, subtotal) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [$orderId, $item['product_id'] ?? null, $item['title'], $item['slug'], $item['price'], $item['qty'], $item['subtotal']]
+            );
+        }
+    }
+    
+    return $orderId ? ['id' => $orderId, 'ref' => $ref] : false;
+}
+
+function get_order_by_ref(string $ref): ?array
+{
+    return Database::fetchOne("SELECT * FROM orders WHERE order_ref = ?", [$ref]);
+}
+
+function get_user_orders(int $userId): array
+{
+    return Database::fetchAll("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC", [$userId]);
+}
+
+/* ---------- Auth Helpers ---------- */
+
+function is_customer(): bool
+{
+    return !empty($_SESSION['customer_id']);
+}
+
+function is_admin(): bool
+{
+    return !empty($_SESSION['admin_id']);
+}
+
+/* ---------- Legacy JSON fallback (for config.php constants) ---------- */
+
+function load_json(string $name): array
+{
+    $file = __DIR__ . '/../data/' . $name . '.json';
+    if (!is_file($file)) return [];
+    $data = json_decode((string)file_get_contents($file), true);
+    return is_array($data) ? $data : [];
+}
+
+// Backwards compatibility - use DB versions
+function get_products_json(): array { return get_products(); }
+function get_posts_json(): array { return get_posts(); }
+function get_events_json(): array { return get_events(); }

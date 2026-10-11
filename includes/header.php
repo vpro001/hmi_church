@@ -2,24 +2,27 @@
 require_once __DIR__ . '/functions.php';
 
 $page_key   = $page_key   ?? '';
-$page_title = $page_title ?? SITE['name'];
-$page_desc  = $page_desc  ?? SITE['description'];
+$page_title = $page_title ?? site_setting('site_name', 'Healing My-Marriage International Ministry, Inc.');
+$page_desc  = $page_desc  ?? site_setting('site_description', 'A faith-based marriage and family ministry in Rivers State, Nigeria.');
 $page_path  = $page_path  ?? basename($_SERVER['SCRIPT_NAME'] ?? 'index.php');
-$full_title = ($page_key === 'home') ? SITE['name'] . ' | ' . SITE['tagline'] : $page_title . ' | ' . SITE['short_name'];
+$full_title = ($page_key === 'home') 
+    ? site_setting('site_name') . ' | ' . site_setting('site_tagline') 
+    : $page_title . ' | ' . site_setting('site_short_name');
 $canonical  = base_url() . '/' . ($page_path === 'index.php' ? '' : $page_path);
 $og_image   = base_url() . '/assets/img/icon-512.png';
 $flash      = take_flash();
+
 $schema = [
     '@context' => 'https://schema.org',
     '@type'    => 'Organization',
-    'name'     => SITE['name'],
+    'name'     => site_setting('site_name'),
     'url'      => base_url() . '/',
     'logo'     => base_url() . '/assets/img/logo.jpeg',
-    'description' => SITE['description'],
-    'email'    => SITE['email'],
-    'telephone'=> SITE['phones_raw'][0],
+    'description' => site_setting('site_description'),
+    'email'    => site_email(),
+    'telephone'=> site_phones_raw()[0] ?? '+2347042226633',
     'address'  => ['@type' => 'PostalAddress', 'streetAddress' => 'Mercyland Central / Diamond Estate', 'addressRegion' => 'Rivers State', 'addressCountry' => 'NG'],
-    'sameAs'   => array_values(array_filter([SITE['facebook'], SITE['youtube']])),
+    'sameAs'   => array_values(array_filter([facebook_url(), youtube_url()])),
 ];
 ?>
 <!doctype html>
@@ -35,7 +38,7 @@ $schema = [
 <link rel="apple-touch-icon" href="<?= h(asset('img/apple-touch-icon.png')) ?>">
 
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="<?= h(SITE['name']) ?>">
+<meta property="og:site_name" content="<?= h(site_setting('site_name')) ?>">
 <meta property="og:title" content="<?= h($full_title) ?>">
 <meta property="og:description" content="<?= h($page_desc) ?>">
 <meta property="og:url" content="<?= h($canonical) ?>">
@@ -50,9 +53,9 @@ $schema = [
 <link href="<?= h(asset('css/style.css')) ?>" rel="stylesheet">
 
 <script type="application/ld+json"><?= json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
-<?php if (SITE['ga_id'] !== ''): ?>
-<script async src="https://www.googletagmanager.com/gtag/js?id=<?= h(SITE['ga_id']) ?>"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','<?= h(SITE['ga_id']) ?>');</script>
+<?php if (ga_id() !== ''): ?>
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?= h(ga_id()) ?>"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','<?= h(ga_id()) ?>');</script>
 <?php endif; ?>
 </head>
 <body class="page-<?= h($page_key) ?>"<?= !empty($_SESSION['clear_cart']) ? ' data-clear-cart="1"' : '' ?>>
@@ -61,14 +64,16 @@ $schema = [
 
 <div class="topbar d-none d-lg-block">
   <div class="container d-flex justify-content-between align-items-center">
-    <div class="d-flex gap-4">
-      <a href="<?= h(tel_link(SITE['phones_raw'][0])) ?>"><i class="bi bi-telephone-fill" aria-hidden="true"></i> <?= h(SITE['phones'][0]) ?></a>
-      <a href="mailto:<?= h(SITE['email']) ?>"><i class="bi bi-envelope-fill" aria-hidden="true"></i> <?= h(SITE['email']) ?></a>
-      <span><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> <?= h(SITE['address']) ?></span>
+    <div class="d-flex gap-4 flex-wrap">
+      <?php foreach (site_phones_raw() as $i => $raw): ?>
+        <a href="<?= h(tel_link($raw)) ?>"><i class="bi bi-telephone-fill" aria-hidden="true"></i> <?= h(site_phones()[$i] ?? $raw) ?></a>
+      <?php endforeach; ?>
+      <a href="mailto:<?= h(site_email()) ?>"><i class="bi bi-envelope-fill" aria-hidden="true"></i> <?= h(site_email()) ?></a>
+      <span><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> <?= h(site_address()) ?></span>
     </div>
     <div class="d-flex gap-3 align-items-center">
-      <a href="<?= h(SITE['facebook']) ?>" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-      <a href="<?= h(SITE['youtube']) ?>" target="_blank" rel="noopener" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+      <a href="<?= h(facebook_url()) ?>" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+      <a href="<?= h(youtube_url()) ?>" target="_blank" rel="noopener" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
     </div>
   </div>
 </div>
@@ -76,7 +81,7 @@ $schema = [
 <header class="site-header" id="siteHeader">
   <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
     <div class="container">
-      <a class="navbar-brand" href="<?= h(url('index.php')) ?>" aria-label="<?= h(SITE['name']) ?> home">
+      <a class="navbar-brand" href="<?= h(url('index.php')) ?>" aria-label="<?= h(site_setting('site_name')) ?> home">
         <img src="<?= h(asset('img/logo.jpeg')) ?>" alt="Healing My-Marriage International Ministry, Inc. logo" width="508" height="286" class="brand-logo">
       </a>
       <div class="d-flex align-items-center gap-2 ms-auto ms-lg-0 order-lg-3">
@@ -105,6 +110,13 @@ $schema = [
             <input id="navSearch" class="form-control" type="search" name="q" placeholder="Search">
             <button type="submit" aria-label="Search"><i class="bi bi-search"></i></button>
           </form>
+          <?php if (is_customer()): ?>
+            <a class="btn btn-hmi-outline ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('account.php')) ?>"><i class="bi bi-person me-1"></i> My Account</a>
+            <a class="btn btn-hmi-red ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('logout.php')) ?>">Logout</a>
+          <?php else: ?>
+            <a class="btn btn-hmi-outline ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('login.php')) ?>"><i class="bi bi-box-arrow-in-right me-1"></i> Login</a>
+            <a class="btn btn-hmi-red ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('register.php')) ?>">Register</a>
+          <?php endif; ?>
           <a class="btn btn-hmi-red ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('counseling.php#request')) ?>">Book counseling</a>
         </div>
       </div>
@@ -126,15 +138,15 @@ $schema = [
     </div>
     <div id="cartFilled" hidden>
       <ul class="cart-lines list-unstyled" id="cartLines"></ul>
-      <div class="cart-total d-flex justify-content-between"><span>Total</span><strong id="cartTotal">₦0</strong></div>
+      <div class="cart-total d-flex justify-content-between"><span>Total</span><strong id="cartTotal"><?= currency_symbol() ?>0</strong></div>
       <form action="<?= h(url('actions/order.php')) ?>" method="post" novalidate id="orderForm" class="mt-3">
         <?= csrf_field() ?>
         <input type="hidden" name="cart" id="cartJson">
         <h3 class="h6">Place your order request</h3>
         <p class="form-privacy">The ministry will contact you with payment options and send your e-book.</p>
-        <div class="mb-2"><label class="form-label" for="o_name">Full name</label><input class="form-control" id="o_name" name="name" type="text" required maxlength="100" autocomplete="name"></div>
-        <div class="mb-2"><label class="form-label" for="o_email">Email (your e-book is sent here)</label><input class="form-control" id="o_email" name="email" type="email" required maxlength="150" autocomplete="email"></div>
-        <div class="mb-3"><label class="form-label" for="o_phone">Phone or WhatsApp</label><input class="form-control" id="o_phone" name="phone" type="tel" required maxlength="30" autocomplete="tel"></div>
+        <div class="mb-2"><label class="form-label" for="o_name">Full name</label><input class="form-control" id="o_name" name="name" type="text" required maxlength="100" autocomplete="name" value="<?= is_customer() ? h($_SESSION['customer_name']) : '' ?>"></div>
+        <div class="mb-2"><label class="form-label" for="o_email">Email (your e-book is sent here)</label><input class="form-control" id="o_email" name="email" type="email" required maxlength="150" autocomplete="email" value="<?= is_customer() ? h($_SESSION['customer_email']) : '' ?>"></div>
+        <div class="mb-3"><label class="form-label" for="o_phone">Phone or WhatsApp</label><input class="form-control" id="o_phone" name="phone" type="tel" required maxlength="30" autocomplete="tel" value="<?= is_customer() ? h($_SESSION['customer_phone'] ?? '') : '' ?>"></div>
         <button class="btn btn-hmi-red w-100" type="submit">Send order request</button>
         <button class="btn btn-link w-100 mt-1" type="button" id="cartClear">Empty cart</button>
       </form>

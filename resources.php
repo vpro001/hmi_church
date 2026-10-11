@@ -31,11 +31,11 @@ sort($cats);
 
     <div class="row g-4" id="resourceList" data-empty="#noResults">
       <?php foreach ($posts as $p): ?>
-        <div class="col-md-6 col-lg-4" data-filter-item data-cat="<?= h($p['category']) ?>" data-text="<?= h(mb_strtolower($p['title'] . ' ' . $p['excerpt'] . ' ' . $p['category'])) ?>">
+        <div class="col-md-6 col-lg-4" data-filter-item data-cat="<?= h($p['category'] ?? '') ?>" data-text="<?= h(mb_strtolower(($p['title'] ?? '') . ' ' . ($p['excerpt'] ?? '') . ' ' . ($p['category'] ?? ''))) ?>">
           <article class="hmi-card">
-            <div class="cover <?= $p['cover'] !== 'v1' ? h($p['cover']) : '' ?>" aria-hidden="true"><span class="tag"><?= h($p['category']) ?></span><i class="bi <?= h($p['icon']) ?>"></i></div>
+            <div class="cover v1" aria-hidden="true"><span class="tag"><?= h($p['category'] ?? 'Article') ?></span><i class="bi bi-journal-text"></i></div>
             <div class="body">
-              <div class="meta"><span><?= h(fmt_date($p['date'])) ?></span><span><?= h($p['author']) ?></span></div>
+              <div class="meta"><span><?= h(fmt_date($p['published_at'] ?? $p['created_at'])) ?></span></div>
               <h3><a class="text-decoration-none" style="color:inherit" href="<?= h(url('post.php?slug=' . $p['slug'])) ?>"><?= h($p['title']) ?></a></h3>
               <p><?= h($p['excerpt']) ?></p>
               <a class="link-arrow mt-auto" href="<?= h(url('post.php?slug=' . $p['slug'])) ?>">Read more</a>
