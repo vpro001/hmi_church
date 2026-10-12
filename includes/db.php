@@ -26,7 +26,7 @@ class Database {
             
             self::$conn->set_charset('utf8mb4');
             self::$conn->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
-            self::$conn->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
+            // self::$conn->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
         }
         return self::$conn;
     }

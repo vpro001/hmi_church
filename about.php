@@ -1,19 +1,11 @@
 <?php
 $page_key   = 'about';
 $page_title = 'About Us';
-$page_desc  = 'Healing My-Marriage International Ministry is a marriage and family hub in Rivers State, Nigeria, building nations out of marriages through biblical counseling and teaching.';
+$page_desc  = 'Healing My-Marriage International Ministry is a nondenominational marriage and relationship outreach in Rivers State, Nigeria, upholding the whole truth of the Bible to teach, demonstrate and guide people to understand marriage and family matters.';
 $page_path  = 'about.php';
-
-/* ---- Content the ministry must supply. Empty values keep the section hidden. ---- */
-$vision   = '';   // e.g. "Our vision is ..."
-$mission  = '';
-$faith    = [];   // list of statements of faith, e.g. ['We believe in ...']
-$leaders  = [];   // each: ['name' => '', 'role' => '', 'bio' => '']
-$history  = [];   // each: ['year' => '', 'text' => '']
-
 require __DIR__ . '/includes/header.php';
-$hero_title = 'About Healing My-Marriage';
-$hero_sub   = 'A ministry for marriage and family matters, built on the belief that strong marriages build strong nations.';
+$hero_title = 'About Healing My-Marriage International';
+$hero_sub   = 'A nondenominational Marriage/Relationship Outreach. We don\'t teach sectarian doctrine/dogma, rather we earnestly uphold the whole truth of the Bible.';
 require __DIR__ . '/includes/page-hero.php';
 ?>
 
@@ -21,94 +13,159 @@ require __DIR__ . '/includes/page-hero.php';
   <div class="container">
     <div class="row g-5 align-items-center">
       <div class="col-lg-6 reveal">
-        <p class="eyebrow">Our story</p>
-        <h2>Why this ministry exists</h2>
+        <p class="eyebrow">Welcome to HMI</p>
+        <h2>Healing My-Marriage International Ministry, Inc.</h2>
         <div class="prose">
-          <p>HMI is a marriage and family matters solutions hub. We are building nations out of marriages.</p>
-          <p>The heart behind the work comes from pain that was lived, not studied. Cracked marriages, broken homes and unhappy couples with children in disarray leave wounds that can last a lifetime, and the same story can repeat in the next generation if no one steps in to help.</p>
-          <p>Healing My-Marriage International Ministry, Inc. exists to step in, with truth, tenderness and practical help.</p>
+          <p>HMI is a nondenominational Marriage/Relationship Outreach. We don't teach or preach sectarian doctrine/dogma, rather we earnestly uphold the whole truth of the Bible.</p>
+          <p>We are sent to teach, demonstrate and guide people to understand what exactly marriage is and for. How to prepare for a Godly fruitful and satisfying marital relation, and how to effectively manage marital crises.</p>
+          <p>Interpreting what God expects and the place of marriage in Divine purpose and eternal plan. The marital union we espouse is that of one man and woman.</p>
+          <p>We are mission oriented and open to all faith. We're poised to build families of God through our vertical approaches to marriage/family matters.</p>
         </div>
       </div>
       <div class="col-lg-6 reveal">
-        <div class="story">
-          <i class="bi bi-heart-fill heart-mark" aria-hidden="true"></i>
-          <blockquote class="mt-3">Marriage is a journey filled with both beautiful moments and challenging times. We walk it with you.</blockquote>
+        <?php if (file_exists(__DIR__ . '/assets/img/live/famlead.jpg')): ?>
+        <div class="ratio ratio-4x3 rounded overflow-hidden shadow-sm">
+          <img src="<?= h(asset('img/live/famlead.jpg')) ?>" alt="HMI Ministry Leadership" class="object-fit-cover w-100 h-100" loading="lazy">
         </div>
+        <?php else: ?>
+        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="min-height: 300px;"><span class="text-muted">Leadership Image</span></div>
+        <?php endif; ?>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section section-white" aria-labelledby="commitTitle">
+<section class="section section-white" aria-labelledby="missionTitle">
   <div class="container">
     <div class="section-head center reveal">
-      <p class="eyebrow">Our commitment</p>
-      <h2 id="commitTitle">Nurturing faith-centered marriages and families</h2>
+      <p class="eyebrow">Our Commitment</p>
+      <h2 id="missionTitle">Nurturing faith-centered marriages and families</h2>
       <p class="lead">The ministry offers programs designed to support, educate and guide couples on their journey together.</p>
     </div>
     <div class="row g-4">
       <div class="col-md-4 reveal"><article class="hmi-card"><div class="body">
         <div class="icon-chip"><i class="bi bi-people-fill" aria-hidden="true"></i></div>
-        <h3>Marriage enrichment</h3><p>Workshops and resources focused on communication, trust and faith.</p>
+        <h3>Marriage Enrichment</h3><p>Workshops and resources focused on communication, trust and faith.</p>
       </div></article></div>
       <div class="col-md-4 reveal"><article class="hmi-card"><div class="body">
         <div class="icon-chip green"><i class="bi bi-house-heart-fill" aria-hidden="true"></i></div>
-        <h3>Family support</h3><p>Comfort and guidance for the entire family, fostering unity and spiritual growth.</p>
+        <h3>Family Support</h3><p>Comfort and guidance for the entire family, fostering unity and spiritual growth.</p>
       </div></article></div>
       <div class="col-md-4 reveal"><article class="hmi-card"><div class="body">
         <div class="icon-chip red"><i class="bi bi-chat-heart-fill" aria-hidden="true"></i></div>
-        <h3>Faith-based counseling</h3><p>Spiritual teaching joined with practical advice to help you navigate challenges.</p>
+        <h3>Faith-Based Counseling</h3><p>Spiritual teaching joined with practical advice to help you navigate challenges.</p>
       </div></article></div>
     </div>
   </div>
 </section>
 
-<section class="section" aria-labelledby="valuesTitle">
+<section class="section" aria-labelledby="visionTitle">
   <div class="container">
-    <div class="section-head reveal">
-      <p class="eyebrow">What guides our work</p>
-      <h2 id="valuesTitle">Four convictions behind everything we do</h2>
+    <div class="section-head center reveal">
+      <p class="eyebrow">Our Vision & Mission</p>
+      <h2 id="visionTitle">To see Marriages/Families blossom, producing Godly, happy and fulfilled homes</h2>
     </div>
     <div class="row g-4">
-      <?php
-      $values = [
-        ['bi-book-fill',    'Biblical wisdom',     'Scripture is the foundation for every session, teaching and program.'],
-        ['bi-heart-fill',   'Love in leadership',  'We lead with compassion, patience and respect for every person.'],
-        ['bi-shield-check', 'Confidentiality',     'People share their hardest struggles with us. We guard that trust.'],
-        ['bi-globe-europe-africa', 'Generational impact', 'Healing one marriage changes the story for children and grandchildren.'],
-      ];
-      foreach ($values as $v): ?>
-        <div class="col-sm-6 col-lg-3 reveal">
-          <div class="hmi-card"><div class="body">
-            <div class="icon-chip stone"><i class="bi <?= h($v[0]) ?>" aria-hidden="true"></i></div>
-            <h3 class="h5"><?= h($v[1]) ?></h3><p class="mb-0"><?= h($v[2]) ?></p>
-          </div></div>
-        </div>
-      <?php endforeach; ?>
+      <div class="col-lg-6 reveal">
+        <h3 class="h4">Our Vision</h3>
+        <ul class="checklist mt-3">
+          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span>To see Marriages/Families blossom, producing Godly, happy and fulfilled homes, secured and compassionate society, to the realization of the Kingdom Agenda.</span></li>
+          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span>To have effective leaders of the right kind emerge from functional families to be key players in global affairs.</span></li>
+          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span>To see the reproduction and perpetuation of well nurtured offspring as successors of the good parents.</span></li>
+        </ul>
+      </div>
+      <div class="col-lg-6 reveal">
+        <h3 class="h4">Our Mission</h3>
+        <ul class="checklist mt-3">
+          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span>To provide clear understandable guidelines to initiate and maintain family through marriage.</span></li>
+          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span>To recover lost marriages, and serve as interventionist in Marriage/Family conflicts.</span></li>
+          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span>To restore Family values by providing framework benchmark.</span></li>
+          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span>To reconnect Families back to Christ and reinforce individual's commitment.</span></li>
+          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span>To provide parenting framework geared towards raising healthy and productive Godly children for the Kingdom and society.</span></li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
-<?php if ($vision || $mission): ?>
-<section class="section section-white"><div class="container"><div class="row g-4">
-  <?php if ($vision): ?><div class="col-md-6"><h2 class="h3">Our vision</h2><p><?= h($vision) ?></p></div><?php endif; ?>
-  <?php if ($mission): ?><div class="col-md-6"><h2 class="h3">Our mission</h2><p><?= h($mission) ?></p></div><?php endif; ?>
-</div></div></section>
-<?php endif; ?>
+<section class="section section-white" aria-labelledby="scopeTitle">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow">Our Scope</p>
+      <h2 id="scopeTitle">What we do</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4 col-sm-6 reveal"><div class="hmi-card"><div class="body">
+        <div class="icon-chip"><i class="bi bi-heart-fill" aria-hidden="true"></i></div>
+        <h3>Pre/Post Marriage Counseling</h3>
+      </div></div></div>
+      <div class="col-md-4 col-sm-6 reveal"><div class="hmi-card"><div class="body">
+        <div class="icon-chip green"><i class="bi bi-people-fill" aria-hidden="true"></i></div>
+        <h3>Family Counseling</h3>
+      </div></div></div>
+      <div class="col-md-4 col-sm-6 reveal"><div class="hmi-card"><div class="body">
+        <div class="icon-chip red"><i class="bi bi-building" aria-hidden="true"></i></div>
+        <h3>Church/Group Seminars</h3>
+      </div></div></div>
+      <div class="col-md-4 col-sm-6 reveal"><div class="hmi-card"><div class="body">
+        <div class="icon-chip stone"><i class="bi bi-gavel" aria-hidden="true"></i></div>
+        <h3>Marriage/Family Disputes Mediation</h3>
+      </div></div></div>
+      <div class="col-md-4 col-sm-6 reveal"><div class="hmi-card"><div class="body">
+        <div class="icon-chip"><i class="bi bi-calendar-heart" aria-hidden="true"></i></div>
+        <h3>Wedding Planning/Officiating</h3>
+      </div></div></div>
+      <div class="col-md-4 col-sm-6 reveal"><div class="hmi-card"><div class="body">
+        <div class="icon-chip green"><i class="bi bi-mortarboard" aria-hidden="true"></i></div>
+        <h3>Training of Family Circle Teachers</h3>
+      </div></div></div>
+      <div class="col-md-4 col-sm-6 reveal"><div class="hmi-card"><div class="body">
+        <div class="icon-chip red"><i class="bi bi-person-heart" aria-hidden="true"></i></div>
+        <h3>Equipping Child Caregivers</h3>
+      </div></div></div>
+    </div>
+  </div>
+</section>
 
-<?php if ($faith): ?>
-<section class="section"><div class="container"><h2>What we believe</h2><ul class="checklist mt-4">
-  <?php foreach ($faith as $f): ?><li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span><?= h($f) ?></span></li><?php endforeach; ?>
-</ul></div></section>
-<?php endif; ?>
+<section class="section" aria-labelledby="messageTitle">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow">Our Message</p>
+      <h2 id="messageTitle">A happy and functional marriage is the foundation of a happy and functional church and society</h2>
+    </div>
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6 reveal">
+        <div class="prose">
+          <p>We believe that a happy and functional marriage is the foundation of a happy and functional church and society.</p>
+          <p>We encourage individuals to work on themselves and their marriages, as only they can bring about the change needed for a fulfilling life.</p>
+          <p>No matter how long you've been married, there is always a higher marital life to strive for, just as there is always a higher faith experience to pursue.</p>
+          <p>Our resources, including <strong>The Understanding of Marriage</strong> and <strong>Love Portion</strong>, are designed to provide you with the knowledge and insights needed to strengthen your marriage and family life.</p>
+          <p>We pray that God opens your eyes, grants you a better perspective and understanding, and gives you the willingness to abide by Divine Principles. Mal.2:15; Gen.1:28.</p>
+        </div>
+      </div>
+      <div class="col-lg-6 reveal">
+        <?php if (file_exists(__DIR__ . '/assets/img/live/dfgdf.jpg')): ?>
+        <div class="ratio ratio-4x3 rounded overflow-hidden shadow-sm">
+          <img src="<?= h(asset('img/live/dfgdf.jpg')) ?>" alt="Our Message" class="object-fit-cover w-100 h-100" loading="lazy">
+        </div>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
+</section>
 
-<?php if ($leaders): ?>
-<section class="section section-white"><div class="container"><h2 class="mb-4">Leadership</h2><div class="row g-4">
-  <?php foreach ($leaders as $l): ?>
-    <div class="col-md-6 col-lg-4"><div class="hmi-card"><div class="body"><h3><?= h($l['name']) ?></h3><p class="eyebrow"><?= h($l['role']) ?></p><p><?= h($l['bio']) ?></p></div></div></div>
-  <?php endforeach; ?>
-</div></div></section>
-<?php endif; ?>
+<section class="section section-white" aria-labelledby="appealTitle">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow">Our Ernest Appeal</p>
+      <h2 id="appealTitle">God wants to raise Kingdom Managers and Administrators</h2>
+    </div>
+    <div class="prose mx-auto" style="max-width: 800px;">
+      <p>Marriage is not just for the individual's enjoyments. God has derivative interest in our marriage. Mal.2:15; Gen.1:28.</p>
+      <p>As itinerant missionaries, we wish to appeal to you, ministers, leaders of communities and families: partner with us to build Godly homes that produce Kingdom leaders.</p>
+    </div>
+  </div>
+</section>
 
 <section class="section section-forest text-center">
   <div class="container">

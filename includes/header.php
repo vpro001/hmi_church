@@ -80,7 +80,7 @@ $schema = [
 
 <header class="site-header" id="siteHeader">
   <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
-    <div class="container">
+    <div class="container-fluid">
       <a class="navbar-brand" href="<?= h(url('index.php')) ?>" aria-label="<?= h(site_setting('site_name')) ?> home">
         <img src="<?= h(asset('img/logo.jpeg')) ?>" alt="Healing My-Marriage International Ministry, Inc. logo" width="508" height="286" class="brand-logo">
       </a>
