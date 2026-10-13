@@ -11,12 +11,14 @@ $events = array_slice(get_events(true), 0, 3);
 
 <!-- HERO -->
 <section class="hero" aria-labelledby="heroTitle">
+  <img class="hero-bg" src="<?= h(asset('img/live/prayer.jpg')) ?>" alt="" aria-hidden="true">
+  <div class="hero-scrim" aria-hidden="true"></div>
   <div class="container position-relative">
     <div class="row align-items-center g-5">
       <div class="col-lg-7">
-        <p class="eyebrow eyebrow-light">Faith-based marriage and family ministry</p>
+        <p class="eyebrow eyebrow-light">Welcome to Healing My-Marriage International</p>
         <h1 id="heroTitle">Reposition. Refix. <em>Rekindle</em> your marriage.</h1>
-        <p class="lead mt-3">We walk with couples and families through every season, with biblical counseling, practical teaching and a community that prays. Because strong marriages build strong nations.</p>
+        <p class="lead mt-3">Discover the power of biblical values in your marriage and family. We walk with couples through every season &mdash; counseling, teaching and a community that prays. Because strong marriages build strong nations.</p>
         <div class="cta-row">
           <a class="btn btn-hmi-red btn-lg" href="<?= h(url('counseling.php#request')) ?>">Get counseled</a>
           <a class="btn btn-hmi-ghost btn-lg" href="<?= h(url('about.php')) ?>">Who we are</a>
@@ -24,7 +26,7 @@ $events = array_slice(get_events(true), 0, 3);
         <p class="hero-note"><i class="bi bi-shield-lock-fill" aria-hidden="true"></i> Every request is handled in confidence.</p>
       </div>
       <div class="col-lg-5 d-none d-md-block">
-        <!-- Cycle illustration built from the logo's vocabulary: three arrows around a heart -->
+        <!-- Cycle illustration built from the logo's vocabulary: three steps around a heart -->
         <svg class="cycle" viewBox="0 0 440 440" role="img" aria-label="A ring of three steps, Reposition, Refix and Rekindle, around a heart">
           <defs>
             <path id="arcA" d="M246 72.3 A150 150 0 0 1 361 271.3"/>
@@ -44,34 +46,64 @@ $events = array_slice(get_events(true), 0, 3);
       </div>
     </div>
   </div>
-  <div class="swoosh-edge" aria-hidden="true">
-    <svg viewBox="0 0 1440 140" preserveAspectRatio="none">
-      <path d="M0 18 C 380 150 1060 150 1440 18 V140 H0 Z" fill="#1c9eb4"/>
-      <path d="M0 52 C 380 184 1060 184 1440 52 V140 H0 Z" fill="#faf6ea"/>
-    </svg>
+  <!-- Trust ribbon -->
+  <div class="trust-ribbon" aria-hidden="true">
+    <div class="container">
+      <span><i class="bi bi-check2"></i> Nondenominational</span>
+      <span><i class="bi bi-check2"></i> Fully confidential</span>
+      <span><i class="bi bi-check2"></i> Biblically grounded</span>
+      <span><i class="bi bi-check2"></i> Rivers State, Nigeria</span>
+    </div>
+  </div>
+</section>
+
+<!-- THREE ASSURANCES -->
+<section class="section section-cream2" aria-labelledby="assureTitle">
+  <div class="container">
+    <h2 id="assureTitle" class="visually-hidden">Why couples trust us</h2>
+    <div class="assurances">
+      <article class="assure reveal">
+        <div class="icon-chip"><i class="bi bi-chat-heart-fill" aria-hidden="true"></i></div>
+        <h3>Personalized Counselling</h3>
+        <p>Tailored sessions to address your unique relationship challenges.</p>
+      </article>
+      <article class="assure reveal">
+        <div class="icon-chip green"><i class="bi bi-people-fill" aria-hidden="true"></i></div>
+        <h3>Experienced Counsellors</h3>
+        <p>A team of qualified professionals dedicated to your relationship&rsquo;s success.</p>
+      </article>
+      <article class="assure reveal">
+        <div class="icon-chip red"><i class="bi bi-award-fill" aria-hidden="true"></i></div>
+        <h3>Proven Methods</h3>
+        <p>Effective techniques that foster understanding and lasting connection.</p>
+      </article>
+    </div>
   </div>
 </section>
 
 <!-- THE THREE STEPS -->
-<section class="section pt-lg-4" aria-labelledby="stepsTitle">
+<section class="section" aria-labelledby="stepsTitle">
   <div class="container">
     <div class="section-head center reveal">
       <p class="eyebrow">How restoration happens</p>
       <h2 id="stepsTitle">A clear path back to each other</h2>
-      <p class="lead">Healing rarely happens by accident. We walk couples through three steps, each one rooted in Scripture and made practical for daily life.</p>
+      <p class="lead">Healing rarely happens by accident. Three steps, each one rooted in Scripture and made practical for ordinary days.</p>
     </div>
     <div class="steps">
       <article class="step reveal">
+        <span class="step-num" aria-hidden="true">I</span>
         <div class="chip"><i class="bi bi-compass-fill" aria-hidden="true"></i></div>
         <h3>Reposition</h3>
         <p>Return to God's design for marriage and see your spouse, your home and your calling from the right place.</p>
       </article>
       <article class="step reveal">
+        <span class="step-num" aria-hidden="true">II</span>
         <div class="chip"><i class="bi bi-tools" aria-hidden="true"></i></div>
         <h3>Refix</h3>
         <p>Name what is broken and repair it with honest conversation, forgiveness and tools you can use on ordinary days.</p>
       </article>
       <article class="step reveal">
+        <span class="step-num" aria-hidden="true">III</span>
         <div class="chip"><i class="bi bi-heart-fill" aria-hidden="true"></i></div>
         <h3>Rekindle</h3>
         <p>Rebuild warmth, trust and joy, so that your marriage is a living testimony to those around you.</p>
@@ -80,79 +112,92 @@ $events = array_slice(get_events(true), 0, 3);
   </div>
 </section>
 
-<!-- WHY WE EXIST -->
-<section class="section section-white" aria-labelledby="whyTitle">
+<!-- FOUNDER -->
+<section class="section section-cream2" aria-labelledby="founderTitle">
   <div class="container">
     <div class="row g-5 align-items-center">
-      <div class="col-lg-6 reveal">
-        <p class="eyebrow">Why we do what we do</p>
-        <h2 id="whyTitle">We are building nations out of marriages</h2>
-        <p class="lead">HMI is a hub for marriage and family matters, serving couples, parents, young people and ministers.</p>
-        <ul class="checklist mt-4">
-          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span><strong>Faith-based principles.</strong> Biblical teaching woven into practical advice.</span></li>
-          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span><strong>A personal approach.</strong> Sessions shaped around your own story, not a script.</span></li>
-          <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span><strong>Experienced guidance.</strong> Counselors dedicated to the success of your relationship.</span></li>
-        </ul>
-        <a class="btn btn-hmi-green mt-4" href="<?= h(url('about.php')) ?>">Read our story</a>
-      </div>
-      <div class="col-lg-6 reveal">
-        <figure class="story mb-0">
-          <i class="bi bi-quote heart-mark" aria-hidden="true"></i>
-          <blockquote>When I see a cracked marriage, a broken home, an unhappy couple and children in disarray, my heart bleeds. I know this too well because I was involved.</blockquote>
-          <figcaption class="mt-4 small text-uppercase" style="letter-spacing:.12em;color:#9fe3ef">From the heart of the ministry</figcaption>
+      <div class="col-lg-5 reveal">
+        <figure class="founder-photo">
+          <img src="<?= h(asset('img/live/founder.jpg')) ?>" alt="Rev. Ogboo Akujuobi, PhD, founder of Healing My-Marriage International" loading="lazy">
+          <span class="corner tl" aria-hidden="true"></span>
+          <span class="corner br" aria-hidden="true"></span>
+          <figcaption class="years">
+            <span class="n">5</span>
+            <span class="l">Years of experience</span>
+          </figcaption>
         </figure>
+      </div>
+      <div class="col-lg-7 reveal">
+        <p class="eyebrow">Why we do what we do</p>
+        <h2 id="founderTitle">Let&rsquo;s build stronger marriages, together</h2>
+        <blockquote class="founder-quote">When I see a cracked marriage, a broken home, an unhappy couple with children in disarray, my heart bleeds. I know the devastation and frustration people suffer in a difficult marriage. I know the lifelong consequences on the products of that union &mdash; how they may lose happiness and fulfillment all through life, and how the same narrative may continue into the next generation if they were not rescued. I know this too well, because I was involved.</blockquote>
+        <p class="founder-name">Rev. Ogboo Akujuobi, PhD</p>
+        <p class="founder-role">Founder &amp; Serving Overseer</p>
+        <div class="why-choose">
+          <div><strong>Expert guidance</strong><span>Years of pastoral experience</span></div>
+          <div><strong>Personal approach</strong><span>Shaped around your story</span></div>
+          <div><strong>Faith-based</strong><span>Biblical, practical wisdom</span></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- WHAT WE OFFER -->
-<section class="section" aria-labelledby="offerTitle">
+<!-- MINISTRY PILLARS -->
+<section class="section" aria-labelledby="pillarsTitle">
   <div class="container">
-    <div class="section-head reveal">
-      <p class="eyebrow">What we offer</p>
-      <h2 id="offerTitle">Support for every part of the family</h2>
+    <div class="section-head center reveal">
+      <p class="eyebrow">Our commitment</p>
+      <h2 id="pillarsTitle">Support for every part of the family</h2>
+      <p class="lead">Counseling, young people and the leaders who serve them &mdash; three works, one heart for the family.</p>
     </div>
-    <div class="row g-4">
-      <div class="col-md-6 col-xl-4 reveal">
-        <article class="hmi-card"><div class="body">
-          <div class="icon-chip"><i class="bi bi-chat-heart-fill" aria-hidden="true"></i></div>
-          <h3>Faith-based counseling</h3>
-          <p>Confidential sessions that bring spiritual teaching together with practical advice for the challenges you face.</p>
-          <a class="link-arrow mt-auto" href="<?= h(url('counseling.php')) ?>">Learn about counseling</a>
-        </div></article>
-      </div>
-      <div class="col-md-6 col-xl-4 reveal">
-        <article class="hmi-card"><div class="body">
-          <div class="icon-chip green"><i class="bi bi-people-fill" aria-hidden="true"></i></div>
-          <h3>Marriage enrichment</h3>
-          <p>Workshops and resources that strengthen communication, trust and faith, for couples at every stage.</p>
-          <a class="link-arrow mt-auto" href="<?= h(url('programs.php#enrichment')) ?>">See enrichment</a>
-        </div></article>
-      </div>
-      <div class="col-md-6 col-xl-4 reveal">
-        <article class="hmi-card"><div class="body">
-          <div class="icon-chip red"><i class="bi bi-house-heart-fill" aria-hidden="true"></i></div>
-          <h3>Family support</h3>
-          <p>Programs for the whole household that build unity, comfort and spiritual growth.</p>
-          <a class="link-arrow mt-auto" href="<?= h(url('programs.php#family')) ?>">See family support</a>
-        </div></article>
-      </div>
-      <div class="col-md-6 col-xl-6 reveal">
-        <article class="hmi-card"><div class="body">
-          <div class="icon-chip stone"><i class="bi bi-stars" aria-hidden="true"></i></div>
+    <div class="pillars">
+      <a class="pillar reveal" href="<?= h(url('counseling.php')) ?>">
+        <img src="<?= h(asset('img/live/marriage-counselling.jpg')) ?>" alt="Marriage and family counseling" loading="lazy">
+        <div class="pillar-scrim" aria-hidden="true"></div>
+        <div class="pillar-body">
+          <span class="k">Counseling</span>
+          <h3>Marriage &amp; Family Counseling</h3>
+          <p>Confidential, personalized sessions that bring biblical wisdom together with practical help for the challenges you face.</p>
+          <span class="link-arrow">Learn more</span>
+        </div>
+      </a>
+      <a class="pillar reveal" href="<?= h(url('programs.php#youth')) ?>">
+        <img src="<?= h(asset('img/live/banner1.jpg')) ?>" alt="Supporting Youths Initiative" loading="lazy">
+        <div class="pillar-scrim" aria-hidden="true"></div>
+        <div class="pillar-body">
+          <span class="k">Youths</span>
           <h3>Supporting Youths Initiative</h3>
-          <p>Building tomorrow's leaders by investing in young people today.</p>
-          <a class="link-arrow mt-auto" href="<?= h(url('programs.php#youth')) ?>">See the initiative</a>
-        </div></article>
-      </div>
-      <div class="col-md-6 col-xl-6 reveal">
-        <article class="hmi-card"><div class="body">
-          <div class="icon-chip"><i class="bi bi-mortarboard-fill" aria-hidden="true"></i></div>
-          <h3>Marriage and family leadership for ministers</h3>
+          <p>Building tomorrow&rsquo;s leaders by investing in young people today &mdash; character, faith and preparation for relationships.</p>
+          <span class="link-arrow">See the initiative</span>
+        </div>
+      </a>
+      <a class="pillar reveal" href="<?= h(url('programs.php#ministers')) ?>">
+        <img src="<?= h(asset('img/live/famlead.jpg')) ?>" alt="Marriage and family leadership for ministers" loading="lazy">
+        <div class="pillar-scrim" aria-hidden="true"></div>
+        <div class="pillar-body">
+          <span class="k">Ministers</span>
+          <h3>Leadership for Ministers</h3>
           <p>Leadership with love and biblical wisdom, for pastors and ministers who serve couples and families.</p>
-          <a class="link-arrow mt-auto" href="<?= h(url('programs.php#ministers')) ?>">See ministers' track</a>
-        </div></article>
+          <span class="link-arrow">See ministers&rsquo; track</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY BAND -->
+<section class="community-band" aria-labelledby="commTitle">
+  <img class="community-bg" src="<?= h(asset('img/live/dfgdf.jpg')) ?>" alt="" aria-hidden="true" loading="lazy">
+  <div class="community-scrim" aria-hidden="true"></div>
+  <div class="container">
+    <div class="community-inner reveal">
+      <p class="eyebrow eyebrow-light">We are building nations out of marriages</p>
+      <h2 id="commTitle">A happy marriage is the foundation of a happy church and society</h2>
+      <p>Every home restored becomes a foundation for the next generation. No matter how long you&rsquo;ve been married, there is always a higher marital life to strive for.</p>
+      <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center">
+        <a class="btn btn-hmi-green btn-lg" href="<?= h(url('about.php')) ?>">Read our story</a>
+        <a class="btn btn-hmi-ghost btn-lg" href="<?= h(url('programs.php')) ?>">See our programs</a>
       </div>
     </div>
   </div>
@@ -224,12 +269,12 @@ $events = array_slice(get_events(true), 0, 3);
   </div>
 </section>
 
-<!-- WATCH + CTA -->
-<section class="section section-forest" aria-labelledby="ctaTitle">
+<!-- CTA -->
+<section class="section section-forest cta-band" aria-labelledby="ctaTitle">
   <div class="container">
     <div class="row g-5 align-items-center">
       <div class="col-lg-7">
-        <p class="eyebrow eyebrow-light">You do not have to carry this alone</p>
+        <p class="eyebrow eyebrow-light">Are you in need of counseling?</p>
         <h2 id="ctaTitle">Take the first step toward a healthier marriage</h2>
         <p class="lead" style="color:#cfe3d9">Tell us a little about your situation. A counselor from the ministry will respond to you personally.</p>
         <div class="d-flex flex-wrap gap-3 mt-4">
@@ -239,8 +284,8 @@ $events = array_slice(get_events(true), 0, 3);
       </div>
       <div class="col-lg-5">
         <ul class="list-unstyled d-grid gap-3 mb-0">
-          <li class="d-flex gap-3"><i class="bi bi-telephone-fill fs-4" style="color:var(--green)" aria-hidden="true"></i><span><a class="text-white fw-semibold text-decoration-none" href="<?= h(tel_link(SITE['phones_raw'][0])) ?>"><?= h(SITE['phones'][0]) ?></a><br><span style="color:#a9c4b6"><?= h(SITE['hours']) ?></span></span></li>
-          <li class="d-flex gap-3"><i class="bi bi-geo-alt-fill fs-4" style="color:var(--green)" aria-hidden="true"></i><span><?= h(SITE['address']) ?></span></li>
+          <li class="d-flex gap-3"><i class="bi bi-telephone-fill fs-4" style="color:var(--gold-lt)" aria-hidden="true"></i><span><a class="text-white fw-semibold text-decoration-none" href="<?= h(tel_link(SITE['phones_raw'][0])) ?>"><?= h(SITE['phones'][0]) ?></a><br><span style="color:#a9c4b6"><?= h(SITE['hours']) ?></span></span></li>
+          <li class="d-flex gap-3"><i class="bi bi-geo-alt-fill fs-4" style="color:var(--gold-lt)" aria-hidden="true"></i><span><?= h(SITE['address']) ?></span></li>
         </ul>
       </div>
     </div>

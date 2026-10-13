@@ -15,9 +15,8 @@ class Database {
             $user = 'root';
             $pass = '';
             $db   = 'hmi_website';
-            $socket = '/opt/lampp/var/mysql/mysql.sock';
             
-            self::$conn = new mysqli($host, $user, $pass, $db, 3306, $socket);
+            self::$conn = new mysqli($host, $user, $pass, $db);
             
             if (self::$conn->connect_error) {
                 error_log('MySQLi Connection Error: ' . self::$conn->connect_error);

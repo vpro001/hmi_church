@@ -32,7 +32,7 @@ $schema = [
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= h($full_title) ?></title>
 <meta name="description" content="<?= h($page_desc) ?>">
-<meta name="theme-color" content="#1f4733">
+<meta name="theme-color" content="#0f261b">
 <link rel="canonical" href="<?= h($canonical) ?>">
 <link rel="icon" type="image/png" href="<?= h(asset('img/favicon.png')) ?>">
 <link rel="apple-touch-icon" href="<?= h(asset('img/apple-touch-icon.png')) ?>">
@@ -47,7 +47,7 @@ $schema = [
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link href="<?= h(asset('vendor/bootstrap/bootstrap.min.css')) ?>" rel="stylesheet">
 <link href="<?= h(asset('vendor/bootstrap-icons/bootstrap-icons.min.css')) ?>" rel="stylesheet">
 <link href="<?= h(asset('css/style.css')) ?>" rel="stylesheet">
@@ -154,7 +154,7 @@ $schema = [
   </div>
 </div>
 
-<?php if ($flash): ?>
+<?php if ($flash && empty($suppress_flash_display)): ?>
 <div class="container flash-wrap">
   <div class="alert alert-<?= $flash['type'] === 'success' ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert" id="flash">
     <?= h($flash['message']) ?>

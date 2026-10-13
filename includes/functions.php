@@ -24,10 +24,8 @@ function base_url(): string
     $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
     // Get the site root by removing /admin, /actions, etc. from the script path
     $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
-    // Remove /admin, /actions, /admin/actions, etc.
     $dir = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
-    $dir = preg_replace('#/(admin|actions)(/|$)#', '', $dir);
-    // If we're still in a subdirectory, keep going up until we hit the root
+    // Strip trailing /admin and /actions segments (handles /admin/actions too)
     while (in_array(basename($dir), ['admin', 'actions'])) {
         $dir = dirname($dir);
     }
@@ -236,6 +234,17 @@ function take_flash(): ?array
 function old(?array $flash = null, string $key = '', string $default = ''): string
 {
     return h($flash['old'][$key] ?? $default);
+}
+
+function field_invalid(?array $flash, string $key): string
+{
+    return !empty($flash['errors'][$key]) ? ' is-invalid' : '';
+}
+
+function field_error(?array $flash, string $key): string
+{
+    $msg = $flash['errors'][$key] ?? '';
+    return $msg !== '' ? '<div class="invalid-feedback">' . h($msg) . '</div>' : '';
 }
 
 /* ---------- Submissions (Database) ---------- */

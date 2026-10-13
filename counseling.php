@@ -41,72 +41,66 @@ require __DIR__ . '/includes/page-hero.php';
           <p class="form-privacy">Share only what you are comfortable with. We use this information to respond to you and for nothing else.</p>
           <p class="eyebrow">Consultation Fee</p>
           <p class="mb-3">This Appointment/Consultation Form fee is <strong>₦12,500</strong>, payable in favour of Healing My-Marriage Int'l <br>Account: 2305613200, United Bank for Africa (UBA).<br>This payment completes your registration before appointment will be secured.</p>
-          
+          <?php $f = $flash ?? null; $err = $f['errors'] ?? []; ?>
           <form action="<?= h(url('actions/counseling.php')) ?>" method="post" novalidate>
             <?= csrf_field() ?>
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label" for="c_name">Your full name <span class="text-danger">*</span></label>
-                <input class="form-control" id="c_name" name="name" type="text" required maxlength="100" autocomplete="name">
+                <input class="form-control<?= isset($err['name']) ? ' is-invalid' : '' ?>" id="c_name" name="name" type="text" required maxlength="100" autocomplete="name" value="<?= old($f, 'name') ?>">
+                <?php if (isset($err['name'])): ?><div class="invalid-feedback d-block"><?= h($err['name']) ?></div><?php endif; ?>
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="c_partner">Spouse or partner's name</label>
-                <input class="form-control" id="c_partner" name="partner" type="text" maxlength="100">
+                <input class="form-control" id="c_partner" name="partner" type="text" maxlength="100" value="<?= old($f, 'partner') ?>">
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="c_email">Email <span class="text-danger">*</span></label>
-                <input class="form-control" id="c_email" name="email" type="email" required maxlength="150" autocomplete="email">
+                <input class="form-control<?= isset($err['email']) ? ' is-invalid' : '' ?>" id="c_email" name="email" type="email" required maxlength="150" autocomplete="email" value="<?= old($f, 'email') ?>">
+                <?php if (isset($err['email'])): ?><div class="invalid-feedback d-block"><?= h($err['email']) ?></div><?php endif; ?>
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="c_phone">Phone or WhatsApp <span class="text-danger">*</span></label>
-                <input class="form-control" id="c_phone" name="phone" type="tel" required maxlength="30" autocomplete="tel">
+                <input class="form-control<?= isset($err['phone']) ? ' is-invalid' : '' ?>" id="c_phone" name="phone" type="tel" required maxlength="30" autocomplete="tel" value="<?= old($f, 'phone') ?>">
+                <?php if (isset($err['phone'])): ?><div class="invalid-feedback d-block"><?= h($err['phone']) ?></div><?php endif; ?>
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="c_status">Your situation</label>
                 <select class="form-select" id="c_status" name="status">
                   <option value="">Select...</option>
-                  <option>Married</option>
-                  <option>Engaged or preparing for marriage</option>
-                  <option>Separated</option>
-                  <option>Seeking guidance for someone else</option>
-                  <option>Minister or leader</option>
-                  <option>Other</option>
+                  <?php foreach (['Married','Engaged or preparing for marriage','Separated','Seeking guidance for someone else','Minister or leader','Other'] as $o): ?>
+                    <option<?= old($f, 'status') === $o ? ' selected' : '' ?>><?= h($o) ?></option>
+                  <?php endforeach; ?>
                 </select>
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="c_topic">Main area of concern</label>
                 <select class="form-select" id="c_topic" name="topic">
                   <option value="">Select...</option>
-                  <option>Communication</option>
-                  <option>Trust and forgiveness</option>
-                  <option>Finances</option>
-                  <option>In-laws and extended family</option>
-                  <option>Parenting</option>
-                  <option>Intimacy</option>
-                  <option>Spiritual growth together</option>
-                  <option>Pre-marital preparation</option>
-                  <option>Not sure yet</option>
+                  <?php foreach (['Communication','Trust and forgiveness','Finances','In-laws and extended family','Parenting','Intimacy','Spiritual growth together','Pre-marital preparation','Not sure yet'] as $o): ?>
+                    <option<?= old($f, 'topic') === $o ? ' selected' : '' ?>><?= h($o) ?></option>
+                  <?php endforeach; ?>
                 </select>
               </div>
               <div class="col-12">
                 <label class="form-label" for="c_mode">How would you like to meet?</label>
                 <select class="form-select" id="c_mode" name="mode">
                   <option value="">Select...</option>
-                  <option>In person</option>
-                  <option>Phone call</option>
-                  <option>Video call</option>
-                  <option>No preference</option>
+                  <?php foreach (['In person','Phone call','Video call','No preference'] as $o): ?>
+                    <option<?= old($f, 'mode') === $o ? ' selected' : '' ?>><?= h($o) ?></option>
+                  <?php endforeach; ?>
                 </select>
               </div>
               <div class="col-12">
                 <label class="form-label" for="c_msg">Briefly, what would you like help with?</label>
-                <textarea class="form-control" id="c_msg" name="message" rows="5" maxlength="1500" placeholder="Describe your situation..."></textarea>
+                <textarea class="form-control" id="c_msg" name="message" rows="5" maxlength="1500" placeholder="Describe your situation..."><?= old($f, 'message') ?></textarea>
                 <div class="form-text">Optional. You can share more when we speak.</div>
               </div>
               <div class="col-12">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="c_consent" name="consent" value="1" required>
+                  <input class="form-check-input<?= isset($err['consent']) ? ' is-invalid' : '' ?>" type="checkbox" id="c_consent" name="consent" value="1" required>
                   <label class="form-check-label" for="c_consent">I agree that Healing My-Marriage International may contact me about this request. See the <a href="<?= h(url('privacy.php')) ?>">privacy policy</a>.</label>
+                  <?php if (isset($err['consent'])): ?><div class="invalid-feedback d-block"><?= h($err['consent']) ?></div><?php endif; ?>
                 </div>
               </div>
               <div class="col-12">

@@ -9,7 +9,7 @@
   </div>
   <div class="swoosh-edge" aria-hidden="true">
     <svg viewBox="0 0 1440 140" preserveAspectRatio="none">
-      <path d="M0 18 C 380 150 1060 150 1440 18 V140 H0 Z" fill="#1c9eb4"/>
+      <path d="M0 18 C 380 150 1060 150 1440 18 V140 H0 Z" fill="#0f261b"/>
       <path d="M0 52 C 380 184 1060 184 1440 52 V140 H0 Z" fill="#faf6ea"/>
     </svg>
   </div>

@@ -19,22 +19,22 @@ $maxP = $products ? max(array_column($products, 'price')) : 0;
   <div class="container">
     <h2 id="shopTitle" class="visually-hidden">Products</h2>
 
-    <div class="shop-toolbar reveal">
+    <div class="shop-filters reveal">
       <div class="pill-filters" id="shopCats" role="group" aria-label="Product category">
         <button type="button" class="active" data-cat="all" aria-pressed="true">All</button>
         <?php foreach ($cats as $c): ?><button type="button" data-cat="<?= h($c) ?>" aria-pressed="false"><?= h($c) ?></button><?php endforeach; ?>
       </div>
-      <div class="d-flex flex-wrap gap-3 align-items-end">
+      <div class="shop-filter-row">
         <div>
-          <label class="form-label mb-1" for="priceMin">Min price (<?= currency_symbol() ?>)</label>
+          <label class="form-label" for="priceMin">Min price (<?= currency_symbol() ?>)</label>
           <input class="form-control" id="priceMin" type="number" inputmode="numeric" min="0" step="500" placeholder="<?= (int)$minP ?>" style="width:9rem">
         </div>
         <div>
-          <label class="form-label mb-1" for="priceMax">Max price (<?= currency_symbol() ?>)</label>
+          <label class="form-label" for="priceMax">Max price (<?= currency_symbol() ?>)</label>
           <input class="form-control" id="priceMax" type="number" inputmode="numeric" min="0" step="500" placeholder="<?= (int)$maxP ?>" style="width:9rem">
         </div>
         <div>
-          <label class="form-label mb-1" for="shopSort">Sort by</label>
+          <label class="form-label" for="shopSort">Sort by</label>
           <select class="form-select" id="shopSort">
             <option value="default">Default</option>
             <option value="price-asc">Price: low to high</option>
@@ -45,29 +45,43 @@ $maxP = $products ? max(array_column($products, 'price')) : 0;
       </div>
     </div>
 
-    <p class="text-muted mt-3 mb-4" id="shopCount" aria-live="polite"><?= count($products) ?> e-books</p>
+    <p class="shop-count mt-4 mb-4" id="shopCount" aria-live="polite"><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i> <?= count($products) ?> e-books</p>
 
-    <div class="row row-cols-2 row-cols-md-3 row-cols-xl-5 g-4" id="shopList">
-      <?php foreach ($products as $i => $p): ?>
-        <div class="col" data-product data-id="<?= h($p['slug']) ?>" data-cat="<?= h($p['category_name'] ?? '') ?>" data-price="<?= (int)$p['price'] ?>" data-name="<?= h(mb_strtolower($p['title'])) ?>" data-order="<?= $i ?>">
+    <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-4" id="shopList">
+      <?php foreach ($products as $i => $p):
+        $onSale = !empty($p['sale_price']) && $p['sale_price'] < $p['price'];
+        $coverVariant = 'v' . (($i % 4) + 1);
+      ?>
+        <div class="col" data-product data-id="<?= h($p['slug']) ?>" data-cat="<?= h($p['category_name'] ?? '') ?>" data-price="<?= (int)($onSale ? $p['sale_price'] : $p['price']) ?>" data-name="<?= h(mb_strtolower($p['title'])) ?>" data-order="<?= $i ?>">
           <article class="hmi-card product-card">
-            <?php if (!empty($p['cover_image'])): ?>
-              <img class="product-img" src="<?= h(url($p['cover_image'])) ?>" alt="Cover of <?= h($p['title']) ?>" loading="lazy">
-            <?php else: ?>
-              <div class="book-cover v1" role="img" aria-label="Cover of <?= h($p['title']) ?>">
-                <span class="bk-tag">E-book</span>
-                <span class="bk-title"><?= h($p['title']) ?></span>
-                <span class="bk-by">Healing My-Marriage International</span>
-              </div>
-            <?php endif; ?>
+            <div class="product-media">
+              <?php if ($onSale): ?><span class="badge-sale">Sale</span><?php endif; ?>
+              <?php if (!empty($p['cover_image'])): ?>
+                <img class="product-img" src="<?= h(url($p['cover_image'])) ?>" alt="Cover of <?= h($p['title']) ?>" loading="lazy">
+              <?php else: ?>
+                <div class="book-cover <?= h($coverVariant) ?>" role="img" aria-label="Cover of <?= h($p['title']) ?>">
+                  <span class="bk-tag">E-book</span>
+                  <span class="bk-title"><?= h($p['title']) ?></span>
+                  <span class="bk-by">Healing My-Marriage International</span>
+                </div>
+              <?php endif; ?>
+            </div>
             <div class="body">
               <span class="badge-hmi align-self-start mb-2"><?= h($p['category_name'] ?? 'Christian E-book') ?></span>
               <h3 class="h6 product-title"><?= h($p['title']) ?></h3>
               <?php if (!empty($p['short_description'])): ?><p class="small"><?= h($p['short_description']) ?></p><?php endif; ?>
               <div class="d-flex justify-content-between align-items-center mt-auto pt-2 gap-2 flex-wrap">
-                <strong class="price"><?= money($p['price']) ?></strong>
-                <a href="<?= h(url('product.php?slug=' . $p['slug'])) ?>" class="btn btn-hmi-outline btn-sm"><i class="bi bi-eye me-1"></i> View</a>
-                <button class="btn btn-hmi-green btn-sm add-to-cart" type="button" data-id="<?= h($p['slug']) ?>" data-title="<?= h($p['title']) ?>" data-price="<?= (int)$p['price'] ?>"><i class="bi bi-bag-plus" aria-hidden="true"></i> Add to cart</button>
+                <strong class="price">
+                  <?php if ($onSale): ?>
+                    <span class="price-was"><?= money($p['price']) ?></span><span class="price-sale"><?= money($p['sale_price']) ?></span>
+                  <?php else: ?>
+                    <?= money($p['price']) ?>
+                  <?php endif; ?>
+                </strong>
+                <div class="d-flex gap-2">
+                  <a href="<?= h(url('product.php?slug=' . $p['slug'])) ?>" class="btn btn-hmi-outline btn-sm"><i class="bi bi-eye me-1" aria-hidden="true"></i> View</a>
+                  <button class="btn btn-hmi-green btn-sm add-to-cart" type="button" data-id="<?= h($p['slug']) ?>" data-title="<?= h($p['title']) ?>" data-price="<?= (int)($onSale ? $p['sale_price'] : $p['price']) ?>"><i class="bi bi-bag-plus" aria-hidden="true"></i> Cart</button>
+                </div>
               </div>
             </div>
           </article>
