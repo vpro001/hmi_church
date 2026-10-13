@@ -5,6 +5,7 @@
 
 $page_title = 'Admin Users';
 $currentPage = 'admins';
+require_once __DIR__ . '/../includes/auth.php';
 admin_require_role('superadmin');
 require_once __DIR__ . '/includes/header.php';
 

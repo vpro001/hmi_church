@@ -30,111 +30,156 @@ $recentSubmissions = Database::fetchAll(
 );
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <div>
-        <h2 class="h3 mb-0">Dashboard</h2>
-        <p class="text-muted mb-0">Welcome back, <?= h($admin['full_name']) ?>. Here's what's happening.</p>
-    </div>
-    <div class="d-flex gap-2">
-        <a href="<?= h(url('admin/products.php')) ?>" class="btn btn-forest"><i class="bi bi-plus-lg me-2"></i> Add Product</a>
+<?php
+// First name for a warmer greeting
+$firstName = trim(explode(' ', $admin['full_name'])[0] ?? '');
+// Flag anything that needs a human today
+$needsAttention = ((int)$stats['orders_pending'] + (int)$stats['submissions_unread']) > 0;
+$today = fmt_date(date('Y-m-d'), 'l, F j');
+?>
+
+<!-- Welcome band -->
+<div class="welcome-band">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
+        <div>
+            <p class="eyebrow">Dashboard</p>
+            <h2>Welcome back, <em><?= h($firstName) ?></em>.</h2>
+            <p><?= h($today) ?> &mdash; <?= $needsAttention
+                ? 'there are items waiting for your attention below.'
+                : 'everything is up to date. Thank you for serving the ministry.' ?></p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="<?= h(url('admin/index.php?action=refresh')) ?>" class="btn btn-outline-forest border-light" style="color:#eaf2ee; border-color:rgba(255,255,255,.3)!important;">
+                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+            </a>
+            <a href="<?= h(url('admin/products.php?action=add')) ?>" class="btn btn-forest" style="background:var(--gold); border-color:var(--gold); color:var(--forest-950);">
+                <i class="bi bi-plus-lg me-1"></i> Add Product
+            </a>
+        </div>
     </div>
 </div>
 
+<!-- Needs attention -->
+<?php if ($needsAttention): ?>
+<div class="row g-3 mb-4">
+    <?php if ((int)$stats['orders_pending'] > 0): ?>
+    <div class="col-md-6">
+        <div class="attn-card">
+            <div class="attn-icon"><i class="bi bi-hourglass-split"></i></div>
+            <div class="attn-body">
+                <strong><?= (int)$stats['orders_pending'] ?></strong>
+                <span>order<?= ((int)$stats['orders_pending'] == 1) ? '' : 's' ?> awaiting confirmation</span>
+            </div>
+            <a href="<?= h(url('admin/orders.php?status=pending')) ?>" class="btn btn-sm btn-forest">Review</a>
+        </div>
+    </div>
+    <?php endif; ?>
+    <?php if ((int)$stats['submissions_unread'] > 0): ?>
+    <div class="col-md-6">
+        <div class="attn-card">
+            <div class="attn-icon"><i class="bi bi-envelope-exclamation"></i></div>
+            <div class="attn-body">
+                <strong><?= (int)$stats['submissions_unread'] ?></strong>
+                <span>unread message<?= ((int)$stats['submissions_unread'] == 1) ? '' : 's' ?> from the contact forms</span>
+            </div>
+            <a href="<?= h(url('admin/submissions.php')) ?>" class="btn btn-sm btn-forest">Read</a>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
+
 <!-- Stats Grid -->
 <div class="stat-grid">
-    <div class="stat-card">
-        <div class="stat-icon products"><i class="bi bi-book"></i></div>
-        <div class="stat-info">
-            <div class="stat-value"><?= (int)$stats['products'] ?></div>
-            <div class="stat-label">Active Products</div>
-        </div>
-        <a href="<?= h(url('admin/products.php')) ?>" class="btn btn-sm btn-outline-forest">Manage</a>
-    </div>
-    <div class="stat-card">
+    <a class="stat-card" href="<?= h(url('admin/orders.php')) ?>">
         <div class="stat-icon orders"><i class="bi bi-cart-check"></i></div>
         <div class="stat-info">
             <div class="stat-value"><?= (int)$stats['orders_total'] ?></div>
             <div class="stat-label">Total Orders</div>
         </div>
-        <a href="<?= h(url('admin/orders.php')) ?>" class="btn btn-sm btn-outline-forest">View All</a>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon orders" style="background: rgba(243,156,18,0.12); color: var(--yellow);"><i class="bi bi-hourglass"></i></div>
-        <div class="stat-info">
-            <div class="stat-value"><?= (int)$stats['orders_pending'] ?></div>
-            <div class="stat-label">Pending Orders</div>
-        </div>
-        <a href="<?= h(url('admin/orders.php?status=pending')) ?>" class="btn btn-sm btn-outline-forest">Review</a>
-    </div>
-    <div class="stat-card">
+    </a>
+    <a class="stat-card" href="<?= h(url('admin/users.php')) ?>">
         <div class="stat-icon users"><i class="bi bi-people"></i></div>
         <div class="stat-info">
             <div class="stat-value"><?= (int)$stats['customers'] ?></div>
             <div class="stat-label">Registered Customers</div>
         </div>
-        <a href="<?= h(url('admin/users.php')) ?>" class="btn btn-sm btn-outline-forest">Manage</a>
-    </div>
-    <div class="stat-card">
+    </a>
+    <a class="stat-card" href="<?= h(url('admin/products.php')) ?>">
+        <div class="stat-icon products"><i class="bi bi-book"></i></div>
+        <div class="stat-info">
+            <div class="stat-value"><?= (int)$stats['products'] ?></div>
+            <div class="stat-label">Active Products</div>
+        </div>
+    </a>
+    <a class="stat-card" href="<?= h(url('admin/orders.php?status=pending')) ?>">
+        <div class="stat-icon attn"><i class="bi bi-hourglass"></i></div>
+        <div class="stat-info">
+            <div class="stat-value"><?= (int)$stats['orders_pending'] ?></div>
+            <div class="stat-label">Pending Orders</div>
+        </div>
+    </a>
+    <a class="stat-card" href="<?= h(url('admin/submissions.php')) ?>">
         <div class="stat-icon submissions"><i class="bi bi-envelope"></i></div>
         <div class="stat-info">
             <div class="stat-value"><?= (int)$stats['submissions_unread'] ?></div>
             <div class="stat-label">Unread Messages</div>
         </div>
-        <a href="<?= h(url('admin/submissions.php')) ?>" class="btn btn-sm btn-outline-forest">Read</a>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon users" style="background: rgba(52,152,219,0.12); color: #3498db;"><i class="bi bi-calendar-event"></i></div>
+    </a>
+    <a class="stat-card" href="<?= h(url('admin/events.php')) ?>">
+        <div class="stat-icon events"><i class="bi bi-calendar-event"></i></div>
         <div class="stat-info">
             <div class="stat-value"><?= (int)$stats['events_upcoming'] ?></div>
             <div class="stat-label">Upcoming Events</div>
         </div>
-        <a href="<?= h(url('admin/events.php')) ?>" class="btn btn-sm btn-outline-forest">Manage</a>
-    </div>
+    </a>
 </div>
 
-<!-- Quick Actions -->
+<!-- Quick Actions & Recent Activity -->
 <div class="row g-4 mb-4">
-    <div class="col-md-6">
+    <div class="col-md-5">
         <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header">
+                <p class="eyebrow mb-1">Shortcuts</p>
                 <h5 class="mb-0">Quick Actions</h5>
             </div>
             <div class="card-body">
-                <div class="d-grid gap-2">
-                    <a href="<?= h(url('admin/products.php?action=add')) ?>" class="btn btn-outline-forest text-start"><i class="bi bi-book me-2"></i> Add New Product</a>
-                    <a href="<?= h(url('admin/posts.php?action=add')) ?>" class="btn btn-outline-forest text-start"><i class="bi bi-journal-plus me-2"></i> Write New Post</a>
-                    <a href="<?= h(url('admin/events.php?action=add')) ?>" class="btn btn-outline-forest text-start"><i class="bi bi-calendar-plus me-2"></i> Create Event</a>
-                    <a href="<?= h(url('admin/pages.php?action=add')) ?>" class="btn btn-outline-forest text-start"><i class="bi bi-file-earmark-plus me-2"></i> Add Page</a>
-                    <a href="<?= h(url('admin/settings.php')) ?>" class="btn btn-outline-secondary text-start"><i class="bi bi-gear me-2"></i> Site Settings</a>
+                <div class="quick-grid">
+                    <a href="<?= h(url('admin/products.php?action=add')) ?>"><i class="bi bi-book"></i> Add New Product</a>
+                    <a href="<?= h(url('admin/posts.php?action=add')) ?>"><i class="bi bi-journal-plus"></i> Write New Post</a>
+                    <a href="<?= h(url('admin/events.php?action=add')) ?>"><i class="bi bi-calendar-plus"></i> Create Event</a>
+                    <a href="<?= h(url('admin/pages.php?action=add')) ?>"><i class="bi bi-file-earmark-plus"></i> Add Page</a>
+                    <a href="<?= h(url('admin/settings.php')) ?>"><i class="bi bi-gear"></i> Site Settings</a>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-7">
         <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header">
+                <p class="eyebrow mb-1">Audit trail</p>
                 <h5 class="mb-0">Recent Activity</h5>
             </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    <?php
-                    $activities = Database::fetchAll("SELECT * FROM activity_log ORDER BY created_at DESC LIMIT 10");
-                    if ($activities):
-                        foreach ($activities as $a):
-                    ?>
-                    <div class="list-group-item px-3 py-2 border-0 border-bottom">
-                        <div class="d-flex justify-content-between">
+            <div class="card-body">
+                <?php
+                $activities = Database::fetchAll("SELECT * FROM activity_log ORDER BY created_at DESC LIMIT 8");
+                if ($activities): ?>
+                <ul class="timeline mb-0">
+                    <?php foreach ($activities as $a): ?>
+                    <li>
+                        <div class="d-flex justify-content-between gap-3">
                             <div>
-                                <strong><?= h($a['action']) ?></strong>
-                                <small class="text-muted ms-2"><?= h($a['description']) ?></small>
+                                <strong style="color:var(--forest-900);"><?= h($a['action']) ?></strong>
+                                <span class="text-muted ms-2"><?= h($a['description']) ?></span>
                             </div>
-                            <small class="text-muted"><?= fmt_date($a['created_at'], 'M j, g:i a') ?></small>
+                            <small class="text-muted flex-shrink-0"><?= fmt_date($a['created_at'], 'M j, g:i a') ?></small>
                         </div>
-                    </div>
-                    <?php endforeach; else: ?>
-                    <div class="list-group-item px-3 py-4 text-center text-muted">No recent activity</div>
-                    <?php endif; ?>
-                </div>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+                <?php else: ?>
+                <div class="empty-state py-4"><i class="bi bi-activity"></i><h6 class="mb-0">No recent activity</h6></div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -145,7 +190,10 @@ $recentSubmissions = Database::fetchAll(
     <div class="col-lg-7">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Recent Orders</h5>
+                <div>
+                    <p class="eyebrow mb-1">Commerce</p>
+                    <h5 class="mb-0">Recent Orders</h5>
+                </div>
                 <a href="<?= h(url('admin/orders.php')) ?>" class="btn btn-sm btn-outline-secondary">View All</a>
             </div>
             <div class="card-body p-0">
@@ -190,7 +238,10 @@ $recentSubmissions = Database::fetchAll(
     <div class="col-lg-5">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Recent Messages</h5>
+                <div>
+                    <p class="eyebrow mb-1">Inbox</p>
+                    <h5 class="mb-0">Recent Messages</h5>
+                </div>
                 <a href="<?= h(url('admin/submissions.php')) ?>" class="btn btn-sm btn-outline-secondary">View All</a>
             </div>
             <div class="card-body p-0">

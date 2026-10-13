@@ -5,6 +5,7 @@
 
 $page_title = 'Activity Log';
 $currentPage = 'activity';
+require_once __DIR__ . '/../includes/auth.php';
 admin_require_role('superadmin', 'admin');
 require_once __DIR__ . '/includes/header.php';
 

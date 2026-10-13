@@ -5,6 +5,7 @@
 
 $page_title = 'Settings';
 $currentPage = 'settings';
+require_once __DIR__ . '/../includes/auth.php';
 admin_require_role('superadmin', 'admin');
 require_once __DIR__ . '/includes/header.php';
 
