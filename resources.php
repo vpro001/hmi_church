@@ -13,7 +13,7 @@ $cats  = array_values(array_unique(array_column($posts, 'category')));
 sort($cats);
 ?>
 
-<section class="section pt-0">
+<section class="section pt-5">
   <div class="container">
     <div class="d-flex flex-column flex-lg-row gap-3 justify-content-between align-items-lg-center mb-4 reveal">
       <div class="search-box w-100">

@@ -11,7 +11,7 @@ $events = array_slice(get_events(true), 0, 3);
 
 <!-- HERO -->
 <section class="hero" aria-labelledby="heroTitle">
-  <img class="hero-bg" src="<?= h(asset('img/live/prayer.jpg')) ?>" alt="" aria-hidden="true">
+  <img class="hero-bg" src="<?= h(asset('img/live/banner2.jpg')) ?>" alt="" aria-hidden="true">
   <div class="hero-scrim" aria-hidden="true"></div>
   <div class="container position-relative">
     <div class="row align-items-center g-5">
@@ -49,7 +49,7 @@ $events = array_slice(get_events(true), 0, 3);
   <!-- Trust ribbon -->
   <div class="trust-ribbon" aria-hidden="true">
     <div class="container">
-      <span><i class="bi bi-check2"></i> Nondenominational</span>
+      <span><i class="bi bi-check2"></i> Non-denominational</span>
       <span><i class="bi bi-check2"></i> Fully confidential</span>
       <span><i class="bi bi-check2"></i> Biblically grounded</span>
       <span><i class="bi bi-check2"></i> Rivers State, Nigeria</span>
@@ -118,7 +118,7 @@ $events = array_slice(get_events(true), 0, 3);
     <div class="row g-5 align-items-center">
       <div class="col-lg-5 reveal">
         <figure class="founder-photo">
-          <img src="<?= h(asset('img/live/founder.jpg')) ?>" alt="Rev. Ogboo Akujuobi, PhD, founder of Healing My-Marriage International" loading="lazy">
+          <img src="<?= h(asset('img/live/img-13.jpg')) ?>" alt="Rev. Ogboo Akujuobi, PhD, founder of Healing My-Marriage International" loading="lazy">
           <span class="corner tl" aria-hidden="true"></span>
           <span class="corner br" aria-hidden="true"></span>
           <figcaption class="years">
@@ -163,7 +163,7 @@ $events = array_slice(get_events(true), 0, 3);
         </div>
       </a>
       <a class="pillar reveal" href="<?= h(url('programs.php#youth')) ?>">
-        <img src="<?= h(asset('img/live/banner1.jpg')) ?>" alt="Supporting Youths Initiative" loading="lazy">
+        <img src="<?= h(asset('img/live/img-22.png')) ?>" alt="Supporting Youths Initiative" loading="lazy">
         <div class="pillar-scrim" aria-hidden="true"></div>
         <div class="pillar-body">
           <span class="k">Youths</span>
@@ -173,7 +173,7 @@ $events = array_slice(get_events(true), 0, 3);
         </div>
       </a>
       <a class="pillar reveal" href="<?= h(url('programs.php#ministers')) ?>">
-        <img src="<?= h(asset('img/live/famlead.jpg')) ?>" alt="Marriage and family leadership for ministers" loading="lazy">
+        <img src="<?= h(asset('img/live/img-19.png')) ?>" alt="Marriage and family leadership for ministers" loading="lazy">
         <div class="pillar-scrim" aria-hidden="true"></div>
         <div class="pillar-body">
           <span class="k">Ministers</span>
@@ -226,7 +226,7 @@ $events = array_slice(get_events(true), 0, 3);
                 <span><i class="bi bi-geo-alt" aria-hidden="true"></i> <?= h($e['location'] ?? 'Mercyland Central / Diamond Estate, Rivers State') ?></span>
               </div>
             </div>
-            <a class="btn btn-hmi-outline" href="<?= h(url('events.php#' . $e['id'])) ?>">Details</a>
+            <a class="btn btn-hmi-outline" href="<?= h(url('event.php?slug=' . $e['slug'])) ?>">Details</a>
           </article>
         <?php endforeach; ?>
       </div>

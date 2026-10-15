@@ -57,8 +57,11 @@ function money(int $n): string
     return $symbol . number_format($n, 0, '.', ',');
 }
 
-function fmt_date(string $iso, string $format = 'j F Y'): string
+function fmt_date(?string $iso, string $format = 'j F Y'): string
 {
+    if ($iso === null || $iso === '') {
+        return '';
+    }
     $t = strtotime($iso);
     return $t ? date($format, $t) : '';
 }
@@ -158,6 +161,42 @@ function get_event_by_slug(string $slug): ?array
         "SELECT * FROM events WHERE slug = ? AND status = 'published'",
         [$slug]
     );
+}
+
+function render_program_schedule(?string $text): string
+{
+    if (empty($text)) return '';
+    
+    if (strip_tags($text) !== $text) {
+        return $text;
+    }
+    
+    $lines = array_filter(array_map('trim', explode("\n", $text)));
+    if (empty($lines)) return '';
+    
+    $html = '<div class="program-schedule-timeline"><ul class="timeline-list list-unstyled mb-0">';
+    
+    foreach ($lines as $line) {
+        if ($line === '') continue;
+        
+        if (preg_match('/^(day\s*\d+|session\s*\d+|morning|afternoon|evening|part\s*\d+)/i', $line)) {
+            $html .= '<li class="timeline-heading-item"><h5 class="timeline-heading">' . h($line) . '</h5></li>';
+        } elseif (preg_match('/^(\d{1,2}(?::\d{2})?\s*(?:am|pm)?(?:\s*[-–—to]+\s*\d{1,2}(?::\d{2})?\s*(?:am|pm)?)?)\s*[-:–—]\s*(.+)$/i', $line, $m)) {
+            $time = trim($m[1]);
+            $desc = trim($m[2]);
+            $html .= '<li class="timeline-item">';
+            $html .= '<div class="timeline-time"><i class="bi bi-clock me-1 text-gold" aria-hidden="true"></i>' . h($time) . '</div>';
+            $html .= '<div class="timeline-desc">' . h($desc) . '</div>';
+            $html .= '</li>';
+        } else {
+            $html .= '<li class="timeline-item timeline-item-note">';
+            $html .= '<div class="timeline-desc">' . h($line) . '</div>';
+            $html .= '</li>';
+        }
+    }
+    
+    $html .= '</ul></div>';
+    return $html;
 }
 
 function get_page_by_slug(string $slug): ?array

@@ -14,7 +14,7 @@ $subject_pref = clean_line($_GET['subject'] ?? '', 120);
 $maps = 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode(SITE['maps_query']);
 ?>
 
-<section class="section pt-0">
+<section class="section pt-5">
   <div class="container">
     <div class="row g-5">
       <div class="col-lg-5 reveal">

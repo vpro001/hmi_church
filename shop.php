@@ -15,7 +15,7 @@ $minP = $products ? min(array_column($products, 'price')) : 0;
 $maxP = $products ? max(array_column($products, 'price')) : 0;
 ?>
 
-<section class="section pt-0" aria-labelledby="shopTitle">
+<section class="section pt-5" aria-labelledby="shopTitle">
   <div class="container">
     <h2 id="shopTitle" class="visually-hidden">Products</h2>
 
@@ -47,40 +47,88 @@ $maxP = $products ? max(array_column($products, 'price')) : 0;
 
     <p class="shop-count mt-4 mb-4" id="shopCount" aria-live="polite"><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i> <?= count($products) ?> e-books</p>
 
-    <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-4" id="shopList">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-3 g-4" id="shopList">
       <?php foreach ($products as $i => $p):
         $onSale = !empty($p['sale_price']) && $p['sale_price'] < $p['price'];
         $coverVariant = 'v' . (($i % 4) + 1);
+        $cleanDesc = !empty($p['short_description']) ? $p['short_description'] : ($p['description'] ?? '');
+        $cleanDesc = rtrim(preg_replace('/\.\.\.*$/', '', trim($cleanDesc)));
+        $discountPct = $onSale ? round((($p['price'] - $p['sale_price']) / $p['price']) * 100) : 0;
       ?>
         <div class="col" data-product data-id="<?= h($p['slug']) ?>" data-cat="<?= h($p['category_name'] ?? '') ?>" data-price="<?= (int)($onSale ? $p['sale_price'] : $p['price']) ?>" data-name="<?= h(mb_strtolower($p['title'])) ?>" data-order="<?= $i ?>">
-          <article class="hmi-card product-card">
+          <article class="product-card">
             <div class="product-media">
-              <?php if ($onSale): ?><span class="badge-sale">Sale</span><?php endif; ?>
-              <?php if (!empty($p['cover_image'])): ?>
-                <img class="product-img" src="<?= h(url($p['cover_image'])) ?>" alt="Cover of <?= h($p['title']) ?>" loading="lazy">
-              <?php else: ?>
-                <div class="book-cover <?= h($coverVariant) ?>" role="img" aria-label="Cover of <?= h($p['title']) ?>">
-                  <span class="bk-tag">E-book</span>
-                  <span class="bk-title"><?= h($p['title']) ?></span>
-                  <span class="bk-by">Healing My-Marriage International</span>
-                </div>
+              <span class="badge-format"><i class="bi bi-file-earmark-pdf-fill" aria-hidden="true"></i> <?= h($p['format'] ?? 'E-Book') ?></span>
+
+              <?php if ($onSale): ?>
+                <span class="badge-sale-pill"><i class="bi bi-tag-fill me-1" aria-hidden="true"></i> <?= $discountPct > 0 ? '-' . $discountPct . '%' : 'Sale' ?></span>
+              <?php elseif (!empty($p['is_featured'])): ?>
+                <span class="badge-popular"><i class="bi bi-star-fill me-1" aria-hidden="true"></i> Featured</span>
               <?php endif; ?>
+
+              <a class="product-media-link" href="<?= h(url('product.php?slug=' . $p['slug'])) ?>" aria-label="View details of <?= h($p['title']) ?>">
+                <?php if (!empty($p['cover_image'])): ?>
+                  <img class="product-img" src="<?= h(url($p['cover_image'])) ?>" alt="Cover of <?= h($p['title']) ?>" loading="lazy">
+                <?php else: ?>
+                  <div class="book-cover <?= h($coverVariant) ?>" role="img" aria-label="Cover of <?= h($p['title']) ?>">
+                    <span class="bk-tag">E-book</span>
+                    <span class="bk-title"><?= h($p['title']) ?></span>
+                    <span class="bk-by">Healing My-Marriage International</span>
+                  </div>
+                <?php endif; ?>
+              </a>
+
+              <div class="product-quick-view-wrap">
+                <a href="<?= h(url('product.php?slug=' . $p['slug'])) ?>" class="btn-quick-view">
+                  <i class="bi bi-eye-fill me-1" aria-hidden="true"></i> Quick View
+                </a>
+              </div>
             </div>
-            <div class="body">
-              <span class="badge-hmi align-self-start mb-2"><?= h($p['category_name'] ?? 'Christian E-book') ?></span>
-              <h3 class="h6 product-title"><?= h($p['title']) ?></h3>
-              <?php if (!empty($p['short_description'])): ?><p class="small"><?= h($p['short_description']) ?></p><?php endif; ?>
-              <div class="d-flex justify-content-between align-items-center mt-auto pt-2 gap-2 flex-wrap">
-                <strong class="price">
+
+            <div class="product-card-body">
+              <div class="product-meta-row">
+                <span class="product-cat-tag"><?= h($p['category_name'] ?? 'Christian E-Book') ?></span>
+                <span class="product-delivery-tag"><i class="bi bi-lightning-charge-fill" aria-hidden="true"></i> Instant</span>
+              </div>
+
+              <h3 class="product-title">
+                <a href="<?= h(url('product.php?slug=' . $p['slug'])) ?>"><?= h($p['title']) ?></a>
+              </h3>
+
+              <?php if (!empty($cleanDesc)): ?>
+                <p class="product-synopsis"><?= h($cleanDesc) ?></p>
+              <?php endif; ?>
+
+              <div class="product-trust-row">
+                <div class="rating-stars" aria-label="5 stars">
+                  <i class="bi bi-star-fill" aria-hidden="true"></i>
+                  <i class="bi bi-star-fill" aria-hidden="true"></i>
+                  <i class="bi bi-star-fill" aria-hidden="true"></i>
+                  <i class="bi bi-star-fill" aria-hidden="true"></i>
+                  <i class="bi bi-star-fill" aria-hidden="true"></i>
+                </div>
+                <span class="rating-label">Biblical Guidance</span>
+              </div>
+
+              <div class="product-footer">
+                <div class="product-pricing">
                   <?php if ($onSale): ?>
-                    <span class="price-was"><?= money($p['price']) ?></span><span class="price-sale"><?= money($p['sale_price']) ?></span>
+                    <div class="price-current is-sale"><?= money($p['sale_price']) ?></div>
+                    <div class="price-original"><?= money($p['price']) ?></div>
+                    <span class="price-save-badge">Save <?= money($p['price'] - $p['sale_price']) ?></span>
                   <?php else: ?>
-                    <?= money($p['price']) ?>
+                    <span class="price-label">Price</span>
+                    <div class="price-current"><?= money($p['price']) ?></div>
                   <?php endif; ?>
-                </strong>
-                <div class="d-flex gap-2">
-                  <a href="<?= h(url('product.php?slug=' . $p['slug'])) ?>" class="btn btn-hmi-outline btn-sm"><i class="bi bi-eye me-1" aria-hidden="true"></i> View</a>
-                  <button class="btn btn-hmi-green btn-sm add-to-cart" type="button" data-id="<?= h($p['slug']) ?>" data-title="<?= h($p['title']) ?>" data-price="<?= (int)($onSale ? $p['sale_price'] : $p['price']) ?>"><i class="bi bi-bag-plus" aria-hidden="true"></i> Cart</button>
+                </div>
+
+                <div class="product-actions">
+                  <button class="btn btn-cart-action add-to-cart" type="button" data-id="<?= h($p['slug']) ?>" data-title="<?= h($p['title']) ?>" data-price="<?= (int)($onSale ? $p['sale_price'] : $p['price']) ?>">
+                    <i class="bi bi-bag-plus-fill" aria-hidden="true"></i> <span>Add to Cart</span>
+                  </button>
+                  <a href="<?= h(url('product.php?slug=' . $p['slug'])) ?>" class="btn-card-detail" title="View details" aria-label="View details of <?= h($p['title']) ?>">
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                  </a>
                 </div>
               </div>
             </div>

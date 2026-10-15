@@ -10,14 +10,14 @@ require __DIR__ . '/includes/page-hero.php';
 ?>
 
 <!-- WELCOME / ABOUT HMI -->
-<section class="section pt-0">
+<section class="section pt-5">
   <div class="container">
     <div class="row g-5 align-items-center">
       <div class="col-lg-6 reveal">
         <p class="eyebrow">Welcome to HMI</p>
         <h2>Healing My-Marriage International Ministry, Inc.</h2>
         <div class="prose">
-          <p><strong>HMI</strong> is a nondenominational Marriage/Relationship Outreach. We don't teach or preach sectarian doctrine/dogma, rather we earnestly uphold the whole truth of the Bible. We are sent to teach, demonstrate and guide people to understand what exactly marriage is and for &mdash; how to prepare for a Godly, fruitful and satisfying marital relation, and how to effectively manage marital crises.</p>
+          <p><strong>HMI</strong> is a nondenominational Marriage/Relationship Outreach. We don't teach or preach sectarian doctrine/dogma, rather we earnestly uphold the whole truth of the Bible. We are sent to teach, demonstrate and guide people to understand what exactly marriage is and for, how to prepare for a Godly, fruitful and satisfying marital relation, and how to effectively manage marital crises.</p>
           <p>We interpret what God expects and the place of marriage in Divine purpose and eternal plan. The marital union we espouse is that of one man and woman. We are mission oriented and open to all faith, poised to build families of God through our vertical approach to marriage and family matters.</p>
         </div>
         <span class="scripture mt-3"><i class="bi bi-bookmark-star-fill" aria-hidden="true"></i> Malachi 2:15 &middot; Genesis 1:28</span>
@@ -26,7 +26,7 @@ require __DIR__ . '/includes/page-hero.php';
         <figure class="photo-frame mb-0" style="margin:0">
           <span class="corner tl" aria-hidden="true"></span>
           <span class="corner br" aria-hidden="true"></span>
-          <img src="<?= h(asset('img/live/famlead.jpg')) ?>" alt="Healing My-Marriage International leadership" loading="lazy">
+          <img src="<?= h(asset('img/live/img-17.jpg')) ?>" alt="Healing My-Marriage International leadership" loading="lazy">
           <figcaption class="photo-badge">
             <span class="n">5</span>
             <span class="l">Years of ministry</span>
@@ -43,7 +43,7 @@ require __DIR__ . '/includes/page-hero.php';
     <div class="row g-5 align-items-center">
       <div class="col-lg-5 reveal">
         <figure class="founder-photo">
-          <img src="<?= h(asset('img/live/founder.jpg')) ?>" alt="Rev. Ogboo Akujuobi, PhD, founder of Healing My-Marriage International" loading="lazy">
+          <img src="<?= h(asset('img/live/img-13.jpg')) ?>" alt="Rev. Ogboo Akujuobi, PhD, founder of Healing My-Marriage International" loading="lazy">
           <span class="corner tl" aria-hidden="true"></span>
           <span class="corner br" aria-hidden="true"></span>
           <figcaption class="years">

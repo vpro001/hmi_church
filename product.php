@@ -20,7 +20,7 @@ $hero_sub = $product['category_name'] ?? 'Christian E-book';
 require __DIR__ . '/includes/page-hero.php';
 ?>
 
-<section class="section pt-0">
+<section class="section pt-5">
   <div class="container">
     <?php
     $onSale = $product['sale_price'] && $product['sale_price'] < $product['price'];

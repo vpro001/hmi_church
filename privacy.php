@@ -9,7 +9,7 @@ $hero_crumb = 'Privacy';
 $hero_sub   = 'Plain-language notes on how we handle what you share with us.';
 require __DIR__ . '/includes/page-hero.php';
 ?>
-<section class="section pt-0">
+<section class="section pt-5">
   <div class="container" style="max-width:820px">
     <div class="prose">
       <p><strong>Draft for the ministry's review.</strong> Have a qualified adviser confirm this text before launch.</p>

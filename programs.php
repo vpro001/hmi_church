@@ -9,7 +9,7 @@ $hero_sub   = 'Four ways the ministry serves, each one rooted in faith and shape
 require __DIR__ . '/includes/page-hero.php';
 ?>
 
-<section class="section pt-0">
+<section class="section pt-5">
   <div class="container">
     <div class="row g-5 align-items-center">
       <div class="col-lg-6 reveal">

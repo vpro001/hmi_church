@@ -9,7 +9,7 @@ $hero_sub   = 'Personal, confidential sessions that bring biblical wisdom togeth
 require __DIR__ . '/includes/page-hero.php';
 ?>
 
-<section class="section pt-0" aria-labelledby="expectTitle">
+<section class="section pt-5" aria-labelledby="expectTitle">
   <div class="container">
     <div class="row g-5">
       <div class="col-lg-6 reveal">
