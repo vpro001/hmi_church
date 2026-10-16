@@ -45,8 +45,7 @@ function admin_check(): bool
 function admin_require_role(string ...$roles): void
 {
     if (!admin_check() || !in_array($_SESSION['admin_role'], $roles)) {
-        header('Location: ' . url('admin/login.php'), true, 303);
-        exit;
+        redirect('admin/login.php');
     }
 }
 
@@ -128,8 +127,7 @@ function customer_require_login(): void
 {
     if (!customer_check()) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'] ?? '/';
-        header('Location: ' . url('login.php'), true, 303);
-        exit;
+        redirect('login.php');
     }
 }
 

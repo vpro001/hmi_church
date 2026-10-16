@@ -227,7 +227,7 @@ function csrf_token(): string
 function csrf_field(): string
 {
     return '<input type="hidden" name="csrf" value="' . h(csrf_token()) . '">'
-         . '<div class="hp-field" aria-hidden="true"><label for="website_url">Leave this empty</label>'
+         . '<div class="hp-field" aria-hidden="true" style="position: absolute; left: -9999px; height: 0; overflow: hidden;"><label for="website_url">Leave this empty</label>'
          . '<input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off"></div>';
 }
 
@@ -323,7 +323,16 @@ function send_notification(string $subject, string $body, string $replyTo = ''):
 
 function redirect(string $path, int $code = 303): never
 {
-    header('Location: ' . url($path), true, $code);
+    $target = url($path);
+    if (!headers_sent()) {
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        header('Location: ' . $target, true, $code);
+    } else {
+        echo '<script>window.location.replace(' . json_encode($target) . ');</script>';
+        echo '<noscript><meta http-equiv="refresh" content="0;url=' . h($target) . '"></noscript>';
+    }
     exit;
 }
 
@@ -335,7 +344,16 @@ function redirect_back(string $fallback, string $anchor = ''): never
     if ($ref !== '' && parse_url($ref, PHP_URL_HOST) === parse_url('//' . $host, PHP_URL_HOST)) {
         $to = strtok($ref, '#');
     }
-    header('Location: ' . $to . $anchor, true, 303);
+    $target = $to . $anchor;
+    if (!headers_sent()) {
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        header('Location: ' . $target, true, 303);
+    } else {
+        echo '<script>window.location.replace(' . json_encode($target) . ');</script>';
+        echo '<noscript><meta http-equiv="refresh" content="0;url=' . h($target) . '"></noscript>';
+    }
     exit;
 }
 

@@ -4,6 +4,10 @@
  * Site configuration - loads from database with defaults
  */
 
+if (ob_get_level() === 0) {
+    ob_start();
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
         'lifetime' => 0,

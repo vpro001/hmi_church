@@ -38,19 +38,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_event'])) {
         
         $uploadDir = dirname(__DIR__) . '/uploads/events/';
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+            mkdir($uploadDir, 0777, true);
+            @chmod($uploadDir, 0777);
         }
         $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $uploadError = null;
         
         // Main Event Flyer Upload
         if (!empty($_POST['remove_image'])) {
             $data['featured_image'] = '';
         } elseif (!empty($_FILES['featured_image']['name'])) {
-            $ext = strtolower(pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION));
-            if (in_array($ext, $allowed, true)) {
-                $filename = $slug . '_flyer_' . time() . '.' . $ext;
-                if (move_uploaded_file($_FILES['featured_image']['tmp_name'], $uploadDir . $filename)) {
-                    $data['featured_image'] = 'uploads/events/' . $filename;
+            if ($_FILES['featured_image']['error'] !== UPLOAD_ERR_OK) {
+                $uploadError = 'Error uploading event flyer (error code ' . $_FILES['featured_image']['error'] . ').';
+            } else {
+                $ext = strtolower(pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION));
+                if (!in_array($ext, $allowed, true)) {
+                    $uploadError = 'Invalid event flyer format. Allowed: ' . implode(', ', $allowed);
+                } else {
+                    $filename = $slug . '_flyer_' . time() . '.' . $ext;
+                    if (move_uploaded_file($_FILES['featured_image']['tmp_name'], $uploadDir . $filename)) {
+                        @chmod($uploadDir . $filename, 0666);
+                        $data['featured_image'] = 'uploads/events/' . $filename;
+                    } else {
+                        $uploadError = 'Could not save flyer file. Please ensure uploads directory is writable.';
+                    }
                 }
             }
         }
@@ -59,11 +70,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_event'])) {
         if (!empty($_POST['remove_program_image'])) {
             $data['program_image'] = '';
         } elseif (!empty($_FILES['program_image']['name'])) {
-            $ext = strtolower(pathinfo($_FILES['program_image']['name'], PATHINFO_EXTENSION));
-            if (in_array($ext, $allowed, true)) {
-                $filename = $slug . '_program_' . time() . '.' . $ext;
-                if (move_uploaded_file($_FILES['program_image']['tmp_name'], $uploadDir . $filename)) {
-                    $data['program_image'] = 'uploads/events/' . $filename;
+            if ($_FILES['program_image']['error'] !== UPLOAD_ERR_OK) {
+                $uploadError = ($uploadError ? $uploadError . ' ' : '') . 'Error uploading program schedule image.';
+            } else {
+                $ext = strtolower(pathinfo($_FILES['program_image']['name'], PATHINFO_EXTENSION));
+                if (!in_array($ext, $allowed, true)) {
+                    $uploadError = ($uploadError ? $uploadError . ' ' : '') . 'Invalid program graphic format.';
+                } else {
+                    $filename = $slug . '_program_' . time() . '.' . $ext;
+                    if (move_uploaded_file($_FILES['program_image']['tmp_name'], $uploadDir . $filename)) {
+                        @chmod($uploadDir . $filename, 0666);
+                        $data['program_image'] = 'uploads/events/' . $filename;
+                    } else {
+                        $uploadError = ($uploadError ? $uploadError . ' ' : '') . 'Could not save program image.';
+                    }
                 }
             }
         }
@@ -74,14 +94,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_event'])) {
                 [$data['slug'], $data['title'], $data['summary'], $data['description'], $data['program_details'], $data['featured_image'], $data['program_image'], $data['category'], $data['location'], $data['start_datetime'], $data['end_datetime'], $data['registration_required'], $data['registration_link'], $data['max_attendees'], $data['status'], $data['meta_title'], $data['meta_description'], $eventId]
             );
             log_activity($admin['id'], 'admin', 'event_update', "Updated event: {$data['title']}");
-            flash('success', 'Event updated successfully.');
+            if ($uploadError) {
+                flash('warning', 'Event updated, but flyer upload had an issue: ' . $uploadError);
+            } else {
+                flash('success', 'Event updated successfully.');
+            }
         } else {
             Database::execute(
                 "INSERT INTO events (slug, title, summary, description, program_details, featured_image, program_image, category, location, start_datetime, end_datetime, registration_required, registration_link, max_attendees, status, meta_title, meta_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [$data['slug'], $data['title'], $data['summary'], $data['description'], $data['program_details'], $data['featured_image'], $data['program_image'], $data['category'], $data['location'], $data['start_datetime'], $data['end_datetime'], $data['registration_required'], $data['registration_link'], $data['max_attendees'], $data['status'], $data['meta_title'], $data['meta_description']]
             );
             log_activity($admin['id'], 'admin', 'event_create', "Created event: {$data['title']}");
-            flash('success', 'Event created successfully.');
+            if ($uploadError) {
+                flash('warning', 'Event created, but flyer upload had an issue: ' . $uploadError);
+            } else {
+                flash('success', 'Event created successfully.');
+            }
         }
         redirect('admin/events.php');
     }

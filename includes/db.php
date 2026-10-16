@@ -337,7 +337,6 @@ function init_database(): void {
             ip_address VARCHAR(45) DEFAULT '',
             user_agent TEXT DEFAULT '',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES admin_users(id) ON DELETE SET NULL,
             INDEX idx_user (user_id, user_type),
             INDEX idx_action (action),
             INDEX idx_created (created_at)

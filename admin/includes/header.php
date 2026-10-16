@@ -86,11 +86,11 @@ $siteName = $settings['site_short_name'] ?? 'Healing My-Marriage';
                         <i class="bi bi-calendar-event"></i> <span>Events</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link <?= $currentPage === 'pages' ? 'active' : '' ?>" href="<?= h(url('admin/pages.php')) ?>">
                         <i class="bi bi-file-text"></i> <span>Pages</span>
                     </a>
-                </li>
+                </li> -->
 
                 <?php if (in_array($admin['role'], ['superadmin', 'admin'])): ?>
                 <li class="nav-group-label" role="presentation">System</li>

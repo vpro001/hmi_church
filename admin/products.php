@@ -33,11 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_product'])) {
         
         // Handle cover image upload
         if (!empty($_FILES['cover_image']['name'])) {
-            $uploadDir = __DIR__ . '/../../assets/img/products/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+            $uploadDir = dirname(__DIR__) . '/assets/img/products/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+                @chmod($uploadDir, 0777);
+            }
             $ext = strtolower(pathinfo($_FILES['cover_image']['name'], PATHINFO_EXTENSION));
             $filename = $data['slug'] . '_' . time() . '.' . $ext;
             if (move_uploaded_file($_FILES['cover_image']['tmp_name'], $uploadDir . $filename)) {
+                @chmod($uploadDir . $filename, 0666);
                 $data['cover_image'] = 'assets/img/products/' . $filename;
             }
         } elseif (!empty($_POST['existing_cover'])) {

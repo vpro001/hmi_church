@@ -467,6 +467,19 @@ a { text-underline-offset: 3px; }
   background: #0f261b;
 }
 
+.event-card-media-top {
+  height: 250px;
+  position: relative;
+  overflow: hidden;
+  background: #0f261b;
+}
+
+@media (max-width: 575.98px) {
+  .event-card-media-top {
+    height: 210px;
+  }
+}
+
 .event-flyer-thumb {
   transition: transform 0.5s ease;
   min-height: 250px;

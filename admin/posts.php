@@ -29,11 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_post'])) {
         
         // Handle featured image
         if (!empty($_FILES['featured_image']['name'])) {
-            $uploadDir = __DIR__ . '/../../assets/img/posts/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+            $uploadDir = dirname(__DIR__) . '/assets/img/posts/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+                @chmod($uploadDir, 0777);
+            }
             $ext = strtolower(pathinfo($_FILES['featured_image']['name'], PATHINFO_EXTENSION));
             $filename = $slug . '_' . time() . '.' . $ext;
             if (move_uploaded_file($_FILES['featured_image']['tmp_name'], $uploadDir . $filename)) {
+                @chmod($uploadDir . $filename, 0666);
                 $data['featured_image'] = 'assets/img/posts/' . $filename;
             }
         } elseif (!empty($_POST['existing_image'])) {

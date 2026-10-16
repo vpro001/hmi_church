@@ -76,6 +76,14 @@ a:hover { color: var(--forest-800); }
     border-radius: 6px;
 }
 
+/* Honeypot spam-trap (output by csrf_field) — keep hidden from real users */
+.hp-field {
+    position: absolute;
+    left: -9999px;
+    height: 0;
+    overflow: hidden;
+}
+
 /* Signature gold eyebrow rule ------------------------------------------------ */
 .eyebrow {
     display: inline-flex;

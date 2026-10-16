@@ -214,20 +214,112 @@ $events = array_slice(get_events(true), 0, 3);
       <a class="link-arrow" href="<?= h(url('events.php')) ?>">All events</a>
     </div>
     <?php if ($events): ?>
-      <div class="d-grid gap-3">
+      <?php $colClass = count($events) === 1 ? 'col-lg-8 col-md-10 mx-auto' : (count($events) === 2 ? 'col-md-6' : 'col-lg-4 col-md-6'); ?>
+      <div class="row g-4">
         <?php foreach ($events as $e): ?>
-          <article class="event-row reveal">
-            <div class="event-date" aria-hidden="true"><span class="d"><?= h(fmt_date($e['start_datetime'], 'j')) ?></span><span class="m"><?= h(fmt_date($e['start_datetime'], 'M')) ?></span></div>
-            <div>
-              <h3><?= h($e['title']) ?></h3>
-              <div class="meta">
-                <span><i class="bi bi-calendar-event" aria-hidden="true"></i> <?= h(fmt_date($e['start_datetime'], 'l, j F Y')) ?></span>
-                <span><i class="bi bi-clock" aria-hidden="true"></i> <?= h(fmt_date($e['start_datetime'], 'g:i a')) ?></span>
-                <span><i class="bi bi-geo-alt" aria-hidden="true"></i> <?= h($e['location'] ?? 'Mercyland Central / Diamond Estate, Rivers State') ?></span>
+          <div class="<?= $colClass ?> reveal">
+            <article class="card event-card-modern border-0 shadow-sm bg-white rounded-4 overflow-hidden h-100 d-flex flex-column" id="ev-<?= h($e['id']) ?>">
+              
+              <!-- FLYER PICTURE / MEDIA -->
+              <div class="event-card-media-top position-relative">
+                <?php if (!empty($e['featured_image'])): ?>
+                  <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#flyerModal-home-<?= $e['id'] ?>" class="d-block w-100 h-100" title="Click to view full flyer">
+                    <img src="<?= h(url($e['featured_image'])) ?>" alt="Flyer for <?= h($e['title']) ?>" class="event-flyer-thumb w-100 h-100 object-fit-cover" loading="lazy">
+                  </a>
+                  <button type="button" class="btn-flyer-zoom" data-bs-toggle="modal" data-bs-target="#flyerModal-home-<?= $e['id'] ?>" title="View full flyer">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                  </button>
+                <?php else: ?>
+                  <div class="event-flyer-placeholder h-100 d-flex flex-column justify-content-center align-items-center p-4 text-center">
+                    <i class="bi bi-calendar-event fs-1 text-gold mb-2"></i>
+                    <strong class="text-white"><?= h($e['category'] ?? 'Event') ?></strong>
+                    <span class="small text-white-50">Healing My-Marriage</span>
+                  </div>
+                <?php endif; ?>
+
+                <!-- Floating Date Chip -->
+                <div class="event-date-chip">
+                  <span class="d"><?= h(fmt_date($e['start_datetime'], 'j')) ?></span>
+                  <span class="m"><?= h(fmt_date($e['start_datetime'], 'M')) ?></span>
+                </div>
+              </div>
+
+              <!-- CONTENT -->
+              <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                  <span class="badge-hmi"><?= h($e['category'] ?? 'Event') ?></span>
+                  <span class="badge bg-forest-subtle text-forest border px-2 py-1 rounded-pill small" data-countdown="<?= h($e['start_datetime']) ?>"></span>
+                </div>
+
+                <h3 class="h5 mb-2" style="font-family:var(--font-display);">
+                  <a href="<?= h(url('event.php?slug=' . $e['slug'])) ?>" class="text-decoration-none text-forest-950 event-title-link">
+                    <?= h($e['title']) ?>
+                  </a>
+                </h3>
+
+                <?php if (!empty($e['summary'])): ?>
+                  <p class="text-muted small mb-3 flex-grow-1"><?= h(mb_strimwidth($e['summary'], 0, 130, '...')) ?></p>
+                <?php endif; ?>
+
+                <div class="event-meta-grid mb-4 small">
+                  <div>
+                    <i class="bi bi-calendar-check text-gold me-1"></i>
+                    <span><?= h(fmt_date($e['start_datetime'], 'l, j F Y')) ?></span>
+                  </div>
+                  <div>
+                    <i class="bi bi-clock text-gold me-1"></i>
+                    <span>
+                      <?= h(fmt_date($e['start_datetime'], 'g:i a')) ?>
+                      <?php if (!empty($e['end_datetime'])): ?>
+                        &mdash; <?= h(fmt_date($e['end_datetime'], 'g:i a')) ?>
+                      <?php endif; ?>
+                    </span>
+                  </div>
+                  <div class="w-100">
+                    <i class="bi bi-geo-alt text-gold me-1"></i>
+                    <span><?= h($e['location'] ?? 'Mercyland Central / Diamond Estate, Rivers State') ?></span>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto gap-2">
+                  <a class="btn btn-sm btn-hmi-green" href="<?= h(url('event.php?slug=' . $e['slug'])) ?>">
+                    Details &amp; Register <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                  <?php if (!empty($e['featured_image'])): ?>
+                    <button type="button" class="btn btn-sm btn-outline-forest" data-bs-toggle="modal" data-bs-target="#flyerModal-home-<?= $e['id'] ?>">
+                      <i class="bi bi-image me-1"></i> View Flyer
+                    </button>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </article>
+
+            <!-- FLYER LIGHTBOX MODAL FOR THIS EVENT -->
+            <?php if (!empty($e['featured_image'])): ?>
+            <div class="modal fade" id="flyerModal-home-<?= $e['id'] ?>" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
+                  <div class="modal-header border-0 bg-forest text-white py-3">
+                    <h3 class="modal-title h6 mb-0 text-white"><i class="bi bi-image me-2 text-gold"></i> <?= h($e['title']) ?> &mdash; Flyer</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body p-0 text-center bg-dark">
+                    <img src="<?= h(url($e['featured_image'])) ?>" alt="<?= h($e['title']) ?>" class="img-fluid" style="max-height:85vh; object-fit:contain;">
+                  </div>
+                  <div class="modal-footer border-0 py-2 bg-light d-flex justify-content-between">
+                    <a href="<?= h(url('event.php?slug=' . $e['slug'])) ?>" class="btn btn-sm btn-outline-forest">
+                      <i class="bi bi-arrow-right me-1"></i> View Full Event Page
+                    </a>
+                    <a href="<?= h(url($e['featured_image'])) ?>" download class="btn btn-sm btn-forest">
+                      <i class="bi bi-download me-1"></i> Download Flyer
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-            <a class="btn btn-hmi-outline" href="<?= h(url('event.php?slug=' . $e['slug'])) ?>">Details</a>
-          </article>
+            <?php endif; ?>
+
+          </div>
         <?php endforeach; ?>
       </div>
     <?php else: ?>
