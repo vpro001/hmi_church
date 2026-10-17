@@ -217,8 +217,14 @@ if ($viewId) {
                             ?>
                         </td>
                         <td><strong><?= money($o['total']) ?></strong></td>
-                        <td><span class="badge bg-<?= $o['status'] === 'pending' ? 'pending' : ($o['status'] === 'paid' ? 'paid' : ($o['status'] === 'completed' ? 'completed' : ($o['status'] === 'cancelled' ? 'cancelled' : 'secondary'))) ?>"><?= ucfirst($o['status']) ?></span></td>
-                        <td><?= h($o['payment_method'] ?: '—') ?></td>
+                        <td>
+                            <?php if ($o['payment_method'] === 'paystack'): ?>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-credit-card me-1"></i>Paystack</span>
+                                <?php if ($o['payment_reference']): ?><br><small class="text-muted font-monospace"><?= h($o['payment_reference']) ?></small><?php endif; ?>
+                            <?php else: ?>
+                                <?= h($o['payment_method'] ?: '—') ?>
+                            <?php endif; ?>
+                        </td>
                         <td><?= fmt_date($o['created_at'], 'M j, Y') ?></td>
                         <td>
                             <a href="<?= h(url('admin/orders.php?view=' . $o['id'])) ?>" class="btn btn-sm btn-outline-secondary">View</a>

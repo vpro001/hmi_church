@@ -73,6 +73,8 @@ function customer_login(string $email, string $password): array|false
     $_SESSION['customer_id'] = $user['id'];
     $_SESSION['customer_email'] = $user['email'];
     $_SESSION['customer_name'] = $user['full_name'];
+    $_SESSION['customer_phone'] = $user['phone'] ?? '';
+    $_SESSION['customer_address'] = $user['address'] ?? '';
     
     log_activity($user['id'], 'customer', 'login', 'Customer logged in');
     

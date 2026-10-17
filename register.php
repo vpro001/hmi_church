@@ -44,6 +44,13 @@ require_once __DIR__ . '/includes/header.php';
         <p class="auth-sub">Join Healing My-Marriage International in a moment.</p>
       </div>
 
+      <?php if (isset($_GET['notice']) && $_GET['notice'] === 'login_required'): ?>
+      <div class="alert alert-info alert-dismissible fade show">
+        <i class="bi bi-info-circle-fill me-1"></i> Create an account to add items to your cart and buy e-books.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <?php endif; ?>
+
       <?php if ($flash): ?>
       <div class="alert alert-<?= $flash['type'] === 'success' ? 'success' : 'danger' ?> alert-dismissible fade show">
         <?= h($flash['message']) ?>
@@ -53,6 +60,7 @@ require_once __DIR__ . '/includes/header.php';
 
       <form class="auth-form" method="post" action="<?= h(url('actions/customer_register.php')) ?>" novalidate>
         <?= csrf_field() ?>
+        <input type="hidden" name="redirect" value="<?= h($_GET['redirect'] ?? '') ?>">
 
         <div class="row g-3">
           <div class="col-md-6">
@@ -103,7 +111,7 @@ require_once __DIR__ . '/includes/header.php';
       </form>
 
       <div class="auth-alt">
-        <p class="mb-0">Already have an account? <a href="<?= h(url('login.php')) ?>">Sign in</a></p>
+        <p class="mb-0">Already have an account? <a href="<?= h(url('login.php' . (!empty($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : ''))) ?>">Sign in</a></p>
       </div>
     </div>
   </div>

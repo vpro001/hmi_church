@@ -84,6 +84,11 @@ $defaults = [
     ['mail_from', 'no-reply@healingmymarriage.org', 'string', 'From email address', 0],
     ['currency_symbol', '₦', 'string', 'Currency symbol', 1],
     ['currency_code', 'NGN', 'string', 'Currency code', 1],
+    ['paystack_enabled', '1', 'bool', 'Enable Paystack payment gateway', 1],
+    ['paystack_mode', 'test', 'string', 'Paystack mode (test or live)', 1],
+    ['paystack_public_key', '', 'string', 'Paystack Public Key (pk_test_... or pk_live_...)', 1],
+    ['paystack_secret_key', '', 'string', 'Paystack Secret Key (sk_test_... or sk_live_...)', 0],
+    ['paystack_test_simulator', '1', 'bool', 'Allow simulated test payment when API keys are not yet configured', 0],
 ];
 
 foreach ($defaults as $d) {

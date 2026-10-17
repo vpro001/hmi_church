@@ -69,16 +69,25 @@ require __DIR__ . '/includes/page-hero.php';
         <?php endif; ?>
 
         <div class="d-flex flex-wrap gap-3 mb-4">
-          <button class="btn btn-hmi-red btn-lg flex-grow-1 add-to-cart" type="button" data-id="<?= h($product['slug']) ?>" data-title="<?= h($product['title']) ?>" data-price="<?= (int)($product['sale_price'] ?? $product['price']) ?>">
-            <i class="bi bi-bag-plus me-2" aria-hidden="true"></i> Add to Cart
-          </button>
+          <?php if (is_customer()): ?>
+            <button class="btn btn-hmi-red btn-lg flex-grow-1 add-to-cart" type="button" data-id="<?= h($product['slug']) ?>" data-title="<?= h($product['title']) ?>" data-price="<?= (int)($product['sale_price'] ?? $product['price']) ?>">
+              <i class="bi bi-bag-plus me-2" aria-hidden="true"></i> Add to Cart
+            </button>
+          <?php else: ?>
+            <a href="<?= h(url('login.php?redirect=' . urlencode('product.php?slug=' . $product['slug']) . '&notice=login_required')) ?>" class="btn btn-hmi-red btn-lg flex-grow-1 text-center">
+              <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i> Sign In to Buy
+            </a>
+          <?php endif; ?>
           <a href="<?= h(url('shop.php')) ?>" class="btn btn-hmi-outline btn-lg">Continue Shopping</a>
         </div>
+        <?php if (!is_customer()): ?>
+        <p class="small text-muted mb-4"><i class="bi bi-info-circle me-1" aria-hidden="true"></i> You must be <a href="<?= h(url('login.php?redirect=' . urlencode('product.php?slug=' . $product['slug']) . '&notice=login_required')) ?>" class="fw-semibold text-decoration-underline">signed in</a> to add items to your cart or purchase.</p>
+        <?php endif; ?>
 
         <ul class="detail-list mb-4">
           <li><i class="bi bi-file-earmark-arrow-down-fill" aria-hidden="true"></i> Instant digital download (PDF)</li>
-          <li><i class="bi bi-shield-lock-fill" aria-hidden="true"></i> Secure order &mdash; the ministry contacts you with payment options</li>
-          <li><i class="bi bi-envelope-heart-fill" aria-hidden="true"></i> Delivered to your email inbox</li>
+          <li><i class="bi bi-shield-lock-fill" aria-hidden="true"></i> Secure checkout powered by Paystack</li>
+          <li><i class="bi bi-envelope-heart-fill" aria-hidden="true"></i> Delivered directly to your email inbox</li>
           <li><i class="bi bi-headset" aria-hidden="true"></i> Need help? Call <a href="<?= h(tel_link(site_phones_raw()[0] ?? '+2347042226633')) ?>"><?= h(site_phones()[0] ?? '+234 704 222 6633') ?></a></li>
         </ul>
 

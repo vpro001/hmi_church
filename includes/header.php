@@ -58,7 +58,7 @@ $schema = [
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','<?= h(ga_id()) ?>');</script>
 <?php endif; ?>
 </head>
-<body class="page-<?= h($page_key) ?>"<?= !empty($_SESSION['clear_cart']) ? ' data-clear-cart="1"' : '' ?>>
+<body class="page-<?= h($page_key) ?>" data-logged-in="<?= is_customer() ? '1' : '0' ?>" data-login-url="<?= h(url('login.php')) ?>"<?= !empty($_SESSION['clear_cart']) ? ' data-clear-cart="1"' : '' ?>>
 <?php unset($_SESSION['clear_cart']); ?>
 <a class="skip-link" href="#main">Skip to main content</a>
 
@@ -122,8 +122,8 @@ $schema = [
             <a class="btn btn-hmi-outline ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('account.php')) ?>"><i class="bi bi-person me-1"></i> My Account</a>
             <a class="btn btn-hmi-red ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('logout.php')) ?>">Logout</a>
           <?php else: ?>
-            <a class="btn btn-hmi-outline ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('login.php')) ?>"><i class="bi bi-box-arrow-in-right me-1"></i> Login</a>
-            <a class="btn btn-hmi-red ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('register.php')) ?>">Register</a>
+            <!-- <a class="btn btn-hmi-outline ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('login.php')) ?>"><i class="bi bi-box-arrow-in-right me-1"></i> Login</a> -->
+            <a class="btn btn-hmi-red ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('login.php')) ?>">Login / Register</a>
           <?php endif; ?>
           <a class="btn btn-hmi-red ms-lg-3 mt-3 mt-lg-0" href="<?= h(url('counseling.php#request')) ?>">Book counseling</a>
         </div>
@@ -139,26 +139,57 @@ $schema = [
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close cart"></button>
   </div>
   <div class="offcanvas-body d-flex flex-column">
-    <div id="cartEmpty" class="empty-state my-auto">
-      <i class="bi bi-bag" aria-hidden="true"></i>
-      <p class="mt-2 mb-3">Your cart is empty.</p>
-      <a class="btn btn-hmi-green" href="<?= h(url('shop.php')) ?>">Browse the shop</a>
-    </div>
-    <div id="cartFilled" hidden>
-      <ul class="cart-lines list-unstyled" id="cartLines"></ul>
-      <div class="cart-total d-flex justify-content-between"><span>Total</span><strong id="cartTotal"><?= currency_symbol() ?>0</strong></div>
-      <form action="<?= h(url('actions/order.php')) ?>" method="post" novalidate id="orderForm" class="mt-3">
-        <?= csrf_field() ?>
-        <input type="hidden" name="cart" id="cartJson">
-        <h3 class="h6">Place your order request</h3>
-        <p class="form-privacy">The ministry will contact you with payment options and send your e-book.</p>
-        <div class="mb-2"><label class="form-label" for="o_name">Full name</label><input class="form-control" id="o_name" name="name" type="text" required maxlength="100" autocomplete="name" value="<?= is_customer() ? h($_SESSION['customer_name']) : '' ?>"></div>
-        <div class="mb-2"><label class="form-label" for="o_email">Email (your e-book is sent here)</label><input class="form-control" id="o_email" name="email" type="email" required maxlength="150" autocomplete="email" value="<?= is_customer() ? h($_SESSION['customer_email']) : '' ?>"></div>
-        <div class="mb-3"><label class="form-label" for="o_phone">Phone or WhatsApp</label><input class="form-control" id="o_phone" name="phone" type="tel" required maxlength="30" autocomplete="tel" value="<?= is_customer() ? h($_SESSION['customer_phone'] ?? '') : '' ?>"></div>
-        <button class="btn btn-hmi-red w-100" type="submit">Send order request</button>
-        <button class="btn btn-link w-100 mt-1" type="button" id="cartClear">Empty cart</button>
-      </form>
-    </div>
+    <?php if (!is_customer()): ?>
+      <div class="empty-state my-auto text-center py-4">
+        <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light text-danger mb-3" style="width: 64px; height: 64px; font-size: 1.8rem;">
+          <i class="bi bi-person-lock" aria-hidden="true"></i>
+        </div>
+        <h3 class="h5 mb-2">Sign In Required</h3>
+        <p class="text-muted mx-auto mb-4" style="max-width: 280px; font-size: 0.92rem;">
+          You cannot add to cart or buy e-books without signing in. Please log in or create an account to start shopping.
+        </p>
+        <div class="d-flex flex-column gap-2 w-100 px-3">
+          <a class="btn btn-hmi-red" href="<?= h(url('login.php?redirect=' . urlencode('shop.php') . '&notice=login_required')) ?>">
+            <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i> Sign In to Buy
+          </a>
+          <a class="btn btn-hmi-outline" href="<?= h(url('register.php?redirect=' . urlencode('shop.php') . '&notice=login_required')) ?>">
+            <i class="bi bi-person-plus me-2" aria-hidden="true"></i> Create an Account
+          </a>
+        </div>
+      </div>
+    <?php else: ?>
+      <div id="cartEmpty" class="empty-state my-auto">
+        <i class="bi bi-bag" aria-hidden="true"></i>
+        <p class="mt-2 mb-3">Your cart is empty.</p>
+        <a class="btn btn-hmi-green" href="<?= h(url('shop.php')) ?>">Browse the shop</a>
+      </div>
+      <div id="cartFilled" hidden>
+        <ul class="cart-lines list-unstyled" id="cartLines"></ul>
+        <div class="cart-total d-flex justify-content-between"><span>Total</span><strong id="cartTotal"><?= currency_symbol() ?>0</strong></div>
+        <form action="<?= h(url('actions/order.php')) ?>" method="post" novalidate id="orderForm" class="mt-3">
+          <?= csrf_field() ?>
+          <input type="hidden" name="cart" id="cartJson">
+          <h3 class="h6 mb-1">Pay with Paystack</h3>
+          <p class="form-privacy mb-3"><i class="bi bi-shield-check text-success me-1" aria-hidden="true"></i> Instant digital delivery to your verified email address.</p>
+          <div class="mb-2">
+            <label class="form-label" for="o_name">Full name</label>
+            <input class="form-control" id="o_name" name="name" type="text" required maxlength="100" autocomplete="name" value="<?= h($_SESSION['customer_name'] ?? '') ?>" readonly>
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="o_email">Email (your e-book is sent here)</label>
+            <input class="form-control" id="o_email" name="email" type="email" required maxlength="150" autocomplete="email" value="<?= h($_SESSION['customer_email'] ?? '') ?>" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="o_phone">Phone or WhatsApp</label>
+            <input class="form-control" id="o_phone" name="phone" type="tel" required maxlength="30" autocomplete="tel" value="<?= h($_SESSION['customer_phone'] ?? '') ?>">
+          </div>
+          <button class="btn btn-hmi-red w-100" type="submit" id="checkoutBtn">
+            <i class="bi bi-lock-fill me-1" aria-hidden="true"></i> Pay with Paystack
+          </button>
+          <button class="btn btn-link w-100 mt-1" type="button" id="cartClear">Empty cart</button>
+        </form>
+      </div>
+    <?php endif; ?>
   </div>
 </div>
 

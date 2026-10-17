@@ -9,9 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect('register.php');
 }
 
+$redirect = trim($_POST['redirect'] ?? '');
+$redirectQuery = !empty($redirect) ? '?redirect=' . urlencode($redirect) : '';
+
 if (!csrf_valid()) {
     flash('danger', 'Invalid CSRF token. Please try again.');
-    redirect('register.php');
+    redirect('register.php' . $redirectQuery);
 }
 
 $firstName = trim($_POST['first_name'] ?? '');
@@ -33,7 +36,7 @@ if (empty($_POST['terms'])) $errors['terms'] = 'You must accept the terms.';
 
 if ($errors) {
     flash('danger', 'Please check the highlighted fields.', ['first_name' => $firstName, 'last_name' => $lastName, 'email' => $email, 'phone' => $phone, 'address' => $address], $errors);
-    redirect('register.php');
+    redirect('register.php' . $redirectQuery);
 }
 
 $name = $firstName . ' ' . $lastName;
@@ -41,8 +44,19 @@ $result = customer_register(['email' => $email, 'password' => $password, 'name' 
 
 if (isset($result['error'])) {
     flash('danger', $result['message'], ['first_name' => $firstName, 'last_name' => $lastName, 'email' => $email, 'phone' => $phone, 'address' => $address]);
-    redirect('register.php');
+    redirect('register.php' . $redirectQuery);
 }
 
-flash('success', 'Account created successfully! You can now sign in.');
-redirect('login.php');
+// Auto-login the user immediately
+customer_login($email, $password);
+
+flash('success', 'Account created successfully! Welcome to Healing My-Marriage.');
+
+// Redirect safely
+$target = 'account.php';
+if (!empty($redirect)) {
+    if (!preg_match('#^https?://#i', $redirect) || str_starts_with($redirect, base_url())) {
+        $target = $redirect;
+    }
+}
+redirect($target);

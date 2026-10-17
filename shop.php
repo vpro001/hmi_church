@@ -123,9 +123,15 @@ $maxP = $products ? max(array_column($products, 'price')) : 0;
                 </div>
 
                 <div class="product-actions">
-                  <button class="btn btn-cart-action add-to-cart" type="button" data-id="<?= h($p['slug']) ?>" data-title="<?= h($p['title']) ?>" data-price="<?= (int)($onSale ? $p['sale_price'] : $p['price']) ?>">
-                    <i class="bi bi-bag-plus-fill" aria-hidden="true"></i> <span>Add to Cart</span>
-                  </button>
+                  <?php if (is_customer()): ?>
+                    <button class="btn btn-cart-action add-to-cart" type="button" data-id="<?= h($p['slug']) ?>" data-title="<?= h($p['title']) ?>" data-price="<?= (int)($onSale ? $p['sale_price'] : $p['price']) ?>">
+                      <i class="bi bi-bag-plus-fill" aria-hidden="true"></i> <span>Add to Cart</span>
+                    </button>
+                  <?php else: ?>
+                    <a href="<?= h(url('login.php?redirect=' . urlencode('shop.php') . '&notice=login_required')) ?>" class="btn btn-cart-action" title="Sign in to add to cart">
+                      <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> <span>Sign In to Buy</span>
+                    </a>
+                  <?php endif; ?>
                   <a href="<?= h(url('product.php?slug=' . $p['slug'])) ?>" class="btn-card-detail" title="View details" aria-label="View details of <?= h($p['title']) ?>">
                     <i class="bi bi-arrow-right" aria-hidden="true"></i>
                   </a>
@@ -153,9 +159,9 @@ $maxP = $products ? max(array_column($products, 'price')) : 0;
       <h2 id="howTitle">From cart to your inbox</h2>
     </div>
     <div class="steps">
-      <div class="step reveal"><div class="chip"><i class="bi bi-bag-plus-fill" aria-hidden="true"></i></div><h3 class="h5">Add to cart</h3><p>Choose one or more e-books. Prices are in Nigerian Naira.</p></div>
-      <div class="step reveal"><div class="chip"><i class="bi bi-send-fill" aria-hidden="true"></i></div><h3 class="h5">Send your request</h3><p>Open your cart, enter your name, email and phone, and send the order request.</p></div>
-      <div class="step reveal"><div class="chip"><i class="bi bi-envelope-heart-fill" aria-hidden="true"></i></div><h3 class="h5">Receive your e-book</h3><p>The ministry contacts you with payment options and sends your e-book by email.</p></div>
+      <div class="step reveal"><div class="chip"><i class="bi bi-person-check-fill" aria-hidden="true"></i></div><h3 class="h5">Sign in & Choose</h3><p>Log in to your account and select your e-books. Prices are in Nigerian Naira.</p></div>
+      <div class="step reveal"><div class="chip"><i class="bi bi-credit-card-fill" aria-hidden="true"></i></div><h3 class="h5">Pay via Paystack</h3><p>Checkout securely with Paystack using debit card, bank transfer or USSD.</p></div>
+      <div class="step reveal"><div class="chip"><i class="bi bi-envelope-heart-fill" aria-hidden="true"></i></div><h3 class="h5">Instant delivery</h3><p>Your order is confirmed immediately and your e-books are sent straight to your email.</p></div>
     </div>
     <p class="text-center mt-4 mb-0 form-privacy mx-auto">Questions about an order? Call <a href="<?= h(tel_link(site_phones_raw()[0] ?? '+2347042226633')) ?>"><?= h(site_phones()[0] ?? '+234 704 222 6633') ?></a> or <a href="<?= h(url('contact.php')) ?>">send us a message</a>.</p>
   </div>

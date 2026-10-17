@@ -443,7 +443,7 @@ function redirect_back(string $fallback, string $anchor = ''): never
 
 /* ---------- Order Functions ---------- */
 
-function create_order(array $data): int|false
+function create_order(array $data): array|false
 {
     $ref = 'HMI-' . date('ymd') . '-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 5));
     

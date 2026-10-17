@@ -11,6 +11,16 @@ customer_require_login();
 $user = customer_user();
 $orders = get_user_orders($user['id']);
 
+$viewOrderId = isset($_GET['order']) ? (int)$_GET['order'] : 0;
+$viewOrder = null;
+$viewOrderItems = [];
+if ($viewOrderId) {
+    $viewOrder = Database::fetchOne("SELECT * FROM orders WHERE id = ? AND user_id = ?", [$viewOrderId, $user['id']]);
+    if ($viewOrder) {
+        $viewOrderItems = Database::fetchAll("SELECT * FROM order_items WHERE order_id = ?", [$viewOrder['id']]);
+    }
+}
+
 $page_key = 'account';
 $page_title = 'My Account';
 $page_desc = 'Manage your account, view order history, and update profile.';
@@ -83,6 +93,84 @@ require __DIR__ . '/includes/page-hero.php';
           <p class="eyebrow">Your purchases</p>
           <h2 class="h3 mb-0">Order History</h2>
         </div>
+
+        <?php if ($viewOrder): ?>
+        <div class="acct-card p-4 mb-4 border border-2 border-primary-subtle">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div>
+              <h3 class="h5 mb-1">Order #<?= h($viewOrder['order_ref']) ?></h3>
+              <small class="text-muted">Placed on <?= fmt_date($viewOrder['created_at'], 'j F Y, g:i a') ?></small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-<?= $viewOrder['status'] === 'paid' ? 'success' : ($viewOrder['status'] === 'pending' ? 'warning text-dark' : 'secondary') ?> text-uppercase">
+                <?= h($viewOrder['status']) ?>
+              </span>
+              <a href="<?= h(url('account.php#orders')) ?>" class="btn btn-sm btn-outline-secondary">Close</a>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3 small">
+            <div class="col-sm-6">
+              <span class="text-muted d-block">Payment Method:</span>
+              <strong><?= h($viewOrder['payment_method'] ?: 'Paystack') ?></strong>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted d-block">Payment Reference:</span>
+              <code><?= h($viewOrder['payment_reference'] ?: 'N/A') ?></code>
+            </div>
+            <?php if (!empty($viewOrder['paid_at'])): ?>
+            <div class="col-sm-6">
+              <span class="text-muted d-block">Paid At:</span>
+              <strong><?= fmt_date($viewOrder['paid_at'], 'j F Y, g:i a') ?></strong>
+            </div>
+            <?php endif; ?>
+          </div>
+
+          <h4 class="h6 mb-2">Order Items</h4>
+          <div class="table-responsive mb-3">
+            <table class="table table-sm align-middle">
+              <thead>
+                <tr class="table-light">
+                  <th>Product</th>
+                  <th class="text-center" style="width: 80px;">Qty</th>
+                  <th class="text-end" style="width: 120px;">Price</th>
+                  <th class="text-end" style="width: 120px;">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($viewOrderItems as $item): ?>
+                <tr>
+                  <td><?= h($item['product_title']) ?></td>
+                  <td class="text-center"><?= $item['qty'] ?></td>
+                  <td class="text-end"><?= money($item['price']) ?></td>
+                  <td class="text-end fw-semibold"><?= money($item['subtotal']) ?></td>
+                </tr>
+                <?php endforeach; ?>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                  <td class="text-end fs-6 fw-bold text-success"><?= money($viewOrder['total']) ?></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <?php if ($viewOrder['status'] === 'pending'): ?>
+          <div class="d-flex align-items-center justify-content-between p-3 rounded bg-warning bg-opacity-10">
+            <span class="small text-muted"><i class="bi bi-clock-history me-1"></i> This order is pending payment.</span>
+            <a href="<?= h(url('actions/order_pay.php?id=' . $viewOrder['id'])) ?>" class="btn btn-hmi-red btn-sm">
+              <i class="bi bi-credit-card-fill me-1"></i> Pay Now with Paystack
+            </a>
+          </div>
+          <?php elseif ($viewOrder['status'] === 'paid'): ?>
+          <div class="p-3 rounded bg-success bg-opacity-10 text-success small">
+            <i class="bi bi-check-circle-fill me-1"></i> Paid in full. E-books dispatched to <?= h($viewOrder['customer_email']) ?>.
+          </div>
+          <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
         <?php if ($orders): ?>
         <div class="acct-card p-lg-2">
           <div class="table-responsive">

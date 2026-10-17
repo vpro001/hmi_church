@@ -158,10 +158,18 @@
   /* ---------- Cart (kept in this browser; the server re-prices every order) ---------- */
   (function () {
     var KEY = 'hmi_cart_v1';
+    var isCustomerLoggedIn = document.body.getAttribute('data-logged-in') === '1';
+    var loginUrl = document.body.getAttribute('data-login-url') || 'login.php';
+
     function load() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
     function save(c) { try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) {} }
-    var cart = load();
-    if (document.body.hasAttribute('data-clear-cart')) { cart = []; save(cart); }
+
+    // If customer is not logged in or clear cart is requested, wipe local cart storage
+    var cart = isCustomerLoggedIn ? load() : [];
+    if (!isCustomerLoggedIn || document.body.hasAttribute('data-clear-cart')) {
+      cart = [];
+      save(cart);
+    }
 
     var elCount = document.getElementById('cartCount');
     var elEmpty = document.getElementById('cartEmpty');
@@ -170,31 +178,50 @@
     var elTotal = document.getElementById('cartTotal');
     var elJson = document.getElementById('cartJson');
     var form = document.getElementById('orderForm');
-    if (!elLines) return;
+    var checkoutBtn = document.getElementById('checkoutBtn');
+
+    if (!elCount) return;
 
     function money(n) { return '₦' + n.toLocaleString('en-NG'); }
     function esc(t) { var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
 
     function render() {
+      if (!isCustomerLoggedIn) {
+        if (elCount) { elCount.hidden = true; elCount.textContent = '0'; }
+        if (elFilled) elFilled.hidden = true;
+        if (elEmpty) elEmpty.hidden = false;
+        return;
+      }
       var qty = cart.reduce(function (a, l) { return a + l.qty; }, 0);
       var total = cart.reduce(function (a, l) { return a + l.qty * l.price; }, 0);
-      elCount.textContent = qty; elCount.hidden = qty === 0;
-      elEmpty.hidden = qty !== 0; elFilled.hidden = qty === 0;
-      elLines.innerHTML = cart.map(function (l, i) {
-        return '<li class="cart-line"><span class="t">' + esc(l.title) + '</span><span class="p">' + money(l.qty * l.price) + '</span>' +
-          '<span class="qty" role="group" aria-label="Quantity for ' + esc(l.title) + '">' +
-          '<button type="button" data-act="dec" data-i="' + i + '" aria-label="Decrease quantity">&minus;</button>' +
-          '<span aria-live="polite">' + l.qty + '</span>' +
-          '<button type="button" data-act="inc" data-i="' + i + '" aria-label="Increase quantity">+</button></span>' +
-          '<button class="rm" type="button" data-act="rm" data-i="' + i + '">Remove</button></li>';
-      }).join('');
-      elTotal.textContent = money(total);
-      elJson.value = JSON.stringify(cart.map(function (l) { return { id: l.id, qty: l.qty }; }));
+      if (elCount) { elCount.textContent = qty; elCount.hidden = qty === 0; }
+      if (elEmpty) elEmpty.hidden = qty !== 0;
+      if (elFilled) elFilled.hidden = qty === 0;
+      if (elLines) {
+        elLines.innerHTML = cart.map(function (l, i) {
+          return '<li class="cart-line"><span class="t">' + esc(l.title) + '</span><span class="p">' + money(l.qty * l.price) + '</span>' +
+            '<span class="qty" role="group" aria-label="Quantity for ' + esc(l.title) + '">' +
+            '<button type="button" data-act="dec" data-i="' + i + '" aria-label="Decrease quantity">&minus;</button>' +
+            '<span aria-live="polite">' + l.qty + '</span>' +
+            '<button type="button" data-act="inc" data-i="' + i + '" aria-label="Increase quantity">+</button></span>' +
+            '<button class="rm" type="button" data-act="rm" data-i="' + i + '">Remove</button></li>';
+        }).join('');
+      }
+      if (elTotal) elTotal.textContent = money(total);
+      if (elJson) elJson.value = JSON.stringify(cart.map(function (l) { return { id: l.id, qty: l.qty }; }));
     }
 
     document.addEventListener('click', function (e) {
       var add = e.target.closest('.add-to-cart');
       if (add) {
+        // Enforce authentication: cannot add to cart without being logged in
+        if (!isCustomerLoggedIn) {
+          e.preventDefault();
+          var redirectTarget = encodeURIComponent(window.location.pathname + window.location.search);
+          window.location.href = loginUrl + '?redirect=' + redirectTarget + '&notice=login_required';
+          return;
+        }
+
         var id = add.getAttribute('data-id');
         var line = cart.filter(function (l) { return l.id === id; })[0];
         if (line) { line.qty = Math.min(20, line.qty + 1); }
@@ -214,7 +241,25 @@
       }
       if (e.target.id === 'cartClear') { cart = []; save(cart); render(); }
     });
-    if (form) form.addEventListener('submit', function (e) { if (!cart.length) e.preventDefault(); });
+
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        if (!isCustomerLoggedIn) {
+          e.preventDefault();
+          window.location.href = loginUrl + '?redirect=' + encodeURIComponent('shop.php') + '&notice=login_required';
+          return;
+        }
+        if (!cart.length) {
+          e.preventDefault();
+          return;
+        }
+        if (checkoutBtn) {
+          checkoutBtn.disabled = true;
+          checkoutBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Connecting to Paystack...';
+        }
+      });
+    }
+
     render();
   })();
 
