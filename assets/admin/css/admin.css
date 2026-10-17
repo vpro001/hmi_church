@@ -782,3 +782,58 @@ th[data-sort].sort-desc::after { content: "↓"; opacity: 1; color: var(--gold);
 /* Legacy hook kept for the standalone login page (no longer used there) */
 .login-card { animation: fadeInUp .4s ease; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Live Streams Admin Styling */
+.pulse-live {
+    animation: livePulseAdmin 1.6s infinite ease-in-out;
+}
+@keyframes livePulseAdmin {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(216, 53, 47, 0.7); }
+    50% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(216, 53, 47, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(216, 53, 47, 0); }
+}
+
+.live-control-card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line);
+    overflow: hidden;
+}
+.live-control-card.is-live {
+    border-color: #d8352f;
+    box-shadow: 0 10px 30px rgba(216, 53, 47, .15);
+}
+.live-control-card.is-live .live-header {
+    background: linear-gradient(135deg, #b32a25 0%, #d8352f 100%);
+    color: #fff;
+}
+.live-control-card.is-scheduled .live-header {
+    background: linear-gradient(135deg, #b8860b 0%, #d4af37 100%);
+    color: #0f261b;
+}
+.live-control-card.is-offline .live-header {
+    background: linear-gradient(135deg, #243027 0%, #54635a 100%);
+    color: #fff;
+}
+.live-header {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem;
+}
+.platform-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .8rem;
+    font-weight: 600;
+    padding: .25rem .75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .25);
+}
+.platform-badge-youtube { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+.platform-badge-facebook { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+.platform-badge-both { background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; }

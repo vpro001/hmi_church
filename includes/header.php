@@ -72,6 +72,9 @@ $schema = [
       <span><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> <?= h(site_address()) ?></span>
     </div>
     <div class="d-flex gap-3 align-items-center">
+      <?php if (is_currently_live()): ?>
+        <a href="<?= h(url('live.php')) ?>" class="badge-live-topbar"><span class="live-dot-pulse"></span> Watch Live</a>
+      <?php endif; ?>
       <a href="<?= h(facebook_url()) ?>" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
       <a href="<?= h(youtube_url()) ?>" target="_blank" rel="noopener" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
     </div>
@@ -101,7 +104,12 @@ $schema = [
           <ul class="navbar-nav ms-lg-auto me-lg-3">
             <?php foreach (NAV as $item): ?>
               <li class="nav-item">
-                <a class="nav-link<?= $page_key === $item['key'] ? ' active' : '' ?>" href="<?= h(url($item['href'])) ?>"<?= $page_key === $item['key'] ? ' aria-current="page"' : '' ?>><?= h($item['label']) ?></a>
+                <a class="nav-link<?= $page_key === $item['key'] ? ' active' : '' ?>" href="<?= h(url($item['href'])) ?>"<?= $page_key === $item['key'] ? ' aria-current="page"' : '' ?>>
+                  <?= h($item['label']) ?>
+                  <?php if ($item['key'] === 'live' && is_currently_live()): ?>
+                    <span class="live-dot-pulse ms-1" title="Broadcasting Live Now"></span>
+                  <?php endif; ?>
+                </a>
               </li>
             <?php endforeach; ?>
           </ul>

@@ -9,6 +9,16 @@ $posts  = array_slice(get_posts(), 0, 3);
 $events = array_slice(get_events(true), 0, 3);
 ?>
 
+<?php $liveBroadcast = get_current_live(); ?>
+<?php if ($liveBroadcast): ?>
+<div class="live-announcement-strip d-flex justify-content-center align-items-center gap-3 flex-wrap">
+  <span><span class="live-dot-pulse me-1"></span> <strong>BROADCASTING LIVE NOW:</strong> <?= h($liveBroadcast['title']) ?> (<?= h(livestream_platform_label($liveBroadcast['platform'])) ?>)</span>
+  <a href="<?= h(url('live.php')) ?>" class="btn btn-sm btn-light text-danger fw-bold rounded-pill px-3 py-1 shadow-sm">
+    <i class="bi bi-play-circle-fill me-1"></i> Watch Live Broadcast
+  </a>
+</div>
+<?php endif; ?>
+
 <!-- HERO -->
 <section class="hero" aria-labelledby="heroTitle">
   <img class="hero-bg" src="<?= h(asset('img/live/banner2.jpg')) ?>" alt="" aria-hidden="true">

@@ -48,7 +48,10 @@ $today = fmt_date(date('Y-m-d'), 'l, F j');
                 ? 'there are items waiting for your attention below.'
                 : 'everything is up to date. Thank you for serving the ministry.' ?></p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="<?= h(url('admin/livestreams.php')) ?>" class="btn btn-outline-forest border-light" style="color:#eaf2ee; border-color:rgba(255,255,255,.3)!important;">
+                <i class="bi bi-broadcast me-1"></i> Live Stream
+            </a>
             <a href="<?= h(url('admin/index.php?action=refresh')) ?>" class="btn btn-outline-forest border-light" style="color:#eaf2ee; border-color:rgba(255,255,255,.3)!important;">
                 <i class="bi bi-arrow-clockwise me-1"></i> Refresh
             </a>
@@ -58,6 +61,31 @@ $today = fmt_date(date('Y-m-d'), 'l, F j');
         </div>
     </div>
 </div>
+
+<?php $adminLive = get_current_live(); ?>
+<?php if ($adminLive): ?>
+<div class="card border-danger border-2 shadow-sm rounded-4 mb-4 overflow-hidden">
+    <div class="card-body p-3 bg-danger bg-opacity-10 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-danger pulse-live py-2 px-3 rounded-pill fw-bold">
+                <span class="live-dot-pulse me-1"></span> LIVE ON AIR
+            </span>
+            <div>
+                <strong class="text-dark"><?= h($adminLive['title']) ?></strong>
+                <span class="text-muted small ms-2">(<?= h(livestream_platform_label($adminLive['platform'])) ?>)</span>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="<?= h(url('live.php')) ?>" target="_blank" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-box-arrow-up-right me-1"></i> Public Page
+            </a>
+            <a href="<?= h(url('admin/livestreams.php')) ?>" class="btn btn-sm btn-danger">
+                <i class="bi bi-broadcast me-1"></i> Control Stream
+            </a>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <!-- Needs attention -->
 <?php if ($needsAttention): ?>

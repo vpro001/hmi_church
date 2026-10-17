@@ -214,6 +214,90 @@ function get_nav_pages(): array
     );
 }
 
+/* ---------- Live Streams ---------- */
+
+function extract_youtube_id(?string $url): string
+{
+    if (empty($url)) return '';
+    $url = trim($url);
+    if (preg_match('/(?:youtube\.com\/(?:watch\?.*?v=|live\/|embed\/|shorts\/)|youtu\.be\/|^)([a-zA-Z0-9_-]{11})(?:[?&]|$)/i', $url, $matches)) {
+        return $matches[1];
+    }
+    return '';
+}
+
+function get_youtube_embed_url(?string $url_or_id): string
+{
+    $id = extract_youtube_id($url_or_id);
+    if ($id) {
+        return 'https://www.youtube-nocookie.com/embed/' . $id . '?autoplay=1&rel=0&modestbranding=1';
+    }
+    return '';
+}
+
+function get_facebook_embed_url(?string $url): string
+{
+    if (empty($url)) return '';
+    $url = trim($url);
+    if (preg_match('/src=["\']([^"\']+)["\']/i', $url, $m)) {
+        return htmlspecialchars_decode($m[1]);
+    }
+    if (strpos($url, 'facebook.com/plugins/video.php') !== false) {
+        return $url;
+    }
+    return 'https://www.facebook.com/plugins/video.php?href=' . urlencode($url) . '&show_text=0&width=auto&autoplay=true';
+}
+
+function get_current_live(): ?array
+{
+    static $cached = null;
+    if ($cached !== null) return $cached ?: null;
+    $res = Database::fetchOne(
+        "SELECT * FROM livestreams WHERE status = 'live' AND is_active = 1 ORDER BY started_at DESC, id DESC LIMIT 1"
+    );
+    $cached = $res ?: false;
+    return $res ?: null;
+}
+
+function is_currently_live(): bool
+{
+    return get_current_live() !== null;
+}
+
+function get_next_scheduled_stream(): ?array
+{
+    return Database::fetchOne(
+        "SELECT * FROM livestreams WHERE status = 'scheduled' AND is_active = 1 AND (scheduled_start >= NOW() OR scheduled_start IS NULL) ORDER BY scheduled_start ASC LIMIT 1"
+    );
+}
+
+function get_featured_livestream(): ?array
+{
+    $live = get_current_live();
+    if ($live) return $live;
+    $scheduled = get_next_scheduled_stream();
+    if ($scheduled) return $scheduled;
+    return Database::fetchOne(
+        "SELECT * FROM livestreams WHERE is_active = 1 ORDER BY started_at DESC, created_at DESC LIMIT 1"
+    );
+}
+
+function get_recent_livestreams(int $limit = 6, int $excludeId = 0): array
+{
+    $sql = "SELECT * FROM livestreams WHERE id != ? ORDER BY created_at DESC LIMIT ?";
+    return Database::fetchAll($sql, [$excludeId, $limit]);
+}
+
+function livestream_platform_label(string $platform): string
+{
+    return match ($platform) {
+        'youtube' => 'YouTube Live',
+        'facebook' => 'Facebook Live',
+        'both' => 'YouTube & Facebook',
+        default => 'Live Stream'
+    };
+}
+
 /* ---------- CSRF & Forms ---------- */
 
 function csrf_token(): string

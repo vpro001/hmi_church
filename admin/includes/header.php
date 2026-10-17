@@ -86,6 +86,14 @@ $siteName = $settings['site_short_name'] ?? 'Healing My-Marriage';
                         <i class="bi bi-calendar-event"></i> <span>Events</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= $currentPage === 'livestreams' ? 'active' : '' ?>" href="<?= h(url('admin/livestreams.php')) ?>">
+                        <i class="bi bi-broadcast"></i> <span>Live Streams</span>
+                        <?php if (is_currently_live()): ?>
+                            <span class="badge bg-danger ms-auto px-2 py-1 pulse-live" style="font-size: 0.65rem;">LIVE</span>
+                        <?php endif; ?>
+                    </a>
+                </li>
                 <!-- <li class="nav-item">
                     <a class="nav-link <?= $currentPage === 'pages' ? 'active' : '' ?>" href="<?= h(url('admin/pages.php')) ?>">
                         <i class="bi bi-file-text"></i> <span>Pages</span>

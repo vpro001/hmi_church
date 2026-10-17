@@ -101,6 +101,7 @@ const NAV = [
     ['key' => 'counseling', 'label' => 'Counseling', 'href' => 'counseling.php'],
     ['key' => 'programs',   'label' => 'Programs',   'href' => 'programs.php'],
     ['key' => 'events',     'label' => 'Events',     'href' => 'events.php'],
+    ['key' => 'live',       'label' => 'Live',       'href' => 'live.php'],
     ['key' => 'resources',  'label' => 'News & Updates', 'href' => 'resources.php'],
     ['key' => 'shop',       'label' => 'Shop',       'href' => 'shop.php'],
     ['key' => 'contact',    'label' => 'Contact',    'href' => 'contact.php'],
